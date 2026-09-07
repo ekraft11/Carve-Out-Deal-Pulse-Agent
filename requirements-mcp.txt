@@ -1,0 +1,6 @@
+# Optional: only needed for the MCP server (mcp_server.py).
+# The screening and monitoring demo does not need this.
+#
+# Note: if pip refuses because it cannot uninstall a system-managed PyJWT, use
+#   pip install --ignore-installed PyJWT -r requirements-mcp.txt
+mcp>=2.1,<3

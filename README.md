@@ -24,9 +24,9 @@ rather than overwrites - see below.
 
 ## Design principles
 
-- **Mock-first.** A local MCP server serves realistic fake data for ~30 fictional
-  healthcare companies. Mock and real sources sit behind the same interface, so
-  swapping in a real connector later does not touch the screening logic.
+- **Mock-first.** A local MCP server (`mcp_server.py`) serves realistic fake data for
+  30 fictional healthcare companies. Mock and real sources sit behind the same
+  interface, so swapping in a real connector later does not touch the screening logic.
 - **Guardrails as configuration.** Read-only tools only, no write access, no open web
   access, an explicit tool allowlist. `config/guardrails.json` holds these settings and
   the engine *refuses to start* if any of them is weakened.
@@ -43,8 +43,14 @@ Python 3.11+ and one package for the Excel output:
 pip install -r requirements.txt   # openpyxl
 ```
 
-The screening and monitoring logic itself uses only the standard library.
-(The optional MCP server additionally needs the `mcp` package.)
+The screening and monitoring logic itself uses only the standard library, so the
+two demo commands cannot be broken by a missing package.
+
+The MCP server is optional and needs one more:
+
+```bash
+pip install -r requirements-mcp.txt   # mcp>=2.1
+```
 
 ## Usage
 
@@ -135,6 +141,37 @@ so "why did we not act on that?" stays answerable. The engine refuses to start
 if a category has no weighting, so a confirmed trigger can never silently count
 for nothing.
 
+## The MCP server
+
+`mcp_server.py` exposes the data layer over MCP (Model Context Protocol), the
+standard way to hand an assistant a fixed set of tools. It is a thin wrapper over
+the same `DataSource`, so the allowlist check and the audit log apply to every
+call an assistant makes.
+
+```bash
+python scripts/mcp_smoke_test.py   # 15 checks, no assistant needed
+python mcp_server.py               # run it directly (speaks MCP on stdin/stdout)
+```
+
+`.mcp.json` in this repository registers the server for Claude Code, so opening
+the project offers to attach it. An assistant can then answer questions about the
+universe using only these five tools.
+
+What the server enforces, rather than merely intends:
+
+- **The tool surface is checked against the config at startup.** If the registered
+  tools and `guardrails.json` disagree in either direction, the process refuses to
+  start. Verified: adding `send_email` to the allowlist, or removing `get_signals`
+  from it, both stop the server with an explanatory message.
+- **Read-only is declared in the protocol**, not just the code. Every tool carries
+  `read_only_hint`, `destructive_hint=false` and `open_world_hint=false` - that last
+  one is the "no web access" guardrail, visible to any client without reading the
+  source. The server refuses to start if a tool is not declared read-only.
+- **Every response carries its `MOCK DATA` label** and a warning, so a downstream
+  assistant cannot mistake the data for real company information.
+- **Nothing is written to stdout.** Under the stdio transport stdout carries the
+  protocol; diagnostics go to stderr.
+
 ## Swapping in a real data source
 
 `sourcing_engine/models.py` defines the contract. A real connector subclasses
@@ -151,5 +188,5 @@ inherited, so a new connector cannot bypass the allowlist or the audit log. Poin
 | 4 | Screening engine + maintained Excel workbook | done |
 | 5 | Monitoring engine, trigger weighting, promotion proposals | done |
 | 6 | Output packs: profile, bios, outreach note | done |
-| 3 | Read-only MCP server | to do |
+| 3 | Read-only MCP server | done |
 | 7 | `run.py audit` view + demo walkthrough | to do |
