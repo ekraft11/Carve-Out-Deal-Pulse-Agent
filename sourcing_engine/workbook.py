@@ -426,45 +426,59 @@ class PipelineWorkbook:
             cell.alignment = Alignment(wrap_text=True, vertical="top")
             row += 1
 
-        # -- live counts, as formulas so they follow the sheet ---------------
+        # -- counts, as values counted from the rows this run wrote ----------
+        # Deliberately literal rather than COUNTIF formulas: the engine
+        # regenerates this workbook on every run, so a formula's ability to
+        # self-update buys nothing, while a value displays correctly in every
+        # viewer instead of staying blank until Excel first opens the file.
         if summary_sheet and summary_spec and "Classification" in summary_spec.headers:
             row += 1
             sheet.cell(row=row, column=1, value="COUNTS").font = Font(
                 name=self.font, bold=True, size=11
             )
             row += 1
-            column_letter = get_column_letter(
-                summary_spec.headers.index("Classification") + 1
-            )
-            review_letter = (
-                get_column_letter(summary_spec.headers.index("Needs human review") + 1)
+            class_index = summary_spec.headers.index("Classification")
+            review_index = (
+                summary_spec.headers.index("Needs human review")
                 if "Needs human review" in summary_spec.headers
                 else None
             )
-            for label, value in (
+            tallies: dict[str, int] = {}
+            flagged = 0
+            for data_row in summary_spec.rows:
+                if class_index < len(data_row):
+                    key = _normalise(data_row[class_index])
+                    tallies[key] = tallies.get(key, 0) + 1
+                if review_index is not None and review_index < len(data_row):
+                    if _normalise(data_row[review_index]) == "yes":
+                        flagged += 1
+
+            for label, key in (
                 ("Active pipeline", "active_pipeline"),
                 ("Watchlist", "watchlist"),
                 ("Excluded", "excluded"),
             ):
                 sheet.cell(row=row, column=1, value=label).font = Font(name=self.font)
-                formula = (
-                    f"=COUNTIF('{summary_sheet}'!${column_letter}:${column_letter},"
-                    f'"{value}")'
-                )
-                cell = sheet.cell(row=row, column=2, value=formula)
+                cell = sheet.cell(row=row, column=2, value=tallies.get(key, 0))
                 cell.font = Font(name=self.font, bold=True)
                 row += 1
-            if review_letter:
+            if review_index is not None:
                 sheet.cell(
                     row=row, column=1, value="Flagged for human review"
                 ).font = Font(name=self.font)
-                cell = sheet.cell(
-                    row=row,
-                    column=2,
-                    value=f"=COUNTIF('{summary_sheet}'!${review_letter}:${review_letter},\"yes\")",
-                )
+                cell = sheet.cell(row=row, column=2, value=flagged)
                 cell.font = Font(name=self.font, bold=True, color="BF8F00")
                 row += 1
+            sheet.cell(row=row, column=1, value="Counted").font = Font(
+                name=self.font, italic=True
+            )
+            sheet.cell(
+                row=row,
+                column=2,
+                value=f"As written by this run from the {len(summary_spec.rows)} rows on "
+                f"{summary_sheet}. Re-run the command to refresh.",
+            ).font = Font(name=self.font, italic=True)
+            row += 1
 
         # -- legend -----------------------------------------------------------
         row += 1
