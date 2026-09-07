@@ -23,6 +23,8 @@ from sourcing_engine.config import (
     REPO_ROOT,
     load_settings,
 )
+from sourcing_engine.data_sources import REGISTRY, DataSourceError, open_data_source
+from sourcing_engine.models import SchemaError
 
 BANNER = f"Private Company Sourcing Engine v{__version__}  [{DATA_LABEL}]"
 RULE = "=" * 78
@@ -131,6 +133,77 @@ def cmd_check(_args: argparse.Namespace) -> int:
     return 0 if all_ok else 1
 
 
+def cmd_universe(_args: argparse.Namespace) -> int:
+    """Read the whole universe through the data layer and show what came back."""
+    settings = load_settings()
+    guardrails = settings.guardrails
+    criteria = settings.criteria
+
+    logger = AuditLogger.for_run(guardrails, command="universe")
+    source = open_data_source(guardrails, logger)
+
+    print(RULE)
+    print(BANNER)
+    print(f"data source: {source.source_label}")
+    print(RULE)
+
+    companies = source.search_companies()
+
+    header = (
+        f"{'ID':<9} {'NAME':<31} {'CTRY':<5} {'TIER':<12} "
+        f"{'EBITDA':>7}  {'LISTED':<7} {'CONTROL TYPE':<32} {'FAM%':>5} {'PE%':>5}"
+    )
+    print(f"\n{header}")
+    print("-" * len(header))
+
+    for company in companies:
+        ownership = source.get_ownership(company.company_id)
+        tier = criteria.tier_for_country(company.country) or "out of scope"
+        ebitda = "n/a" if company.ebitda_eur_m is None else f"{company.ebitda_eur_m:.1f}"
+        print(
+            f"{company.company_id:<9} {company.name[:31]:<31} {company.country:<5} "
+            f"{tier:<12} {ebitda:>7}  {'yes' if company.is_listed else 'no':<7} "
+            f"{ownership.control_type:<32} "
+            f"{ownership.family_founder_stake_pct:>5.0f} {ownership.pe_stake_pct:>5.0f}"
+        )
+
+    # A rough shape-of-the-universe count. This is NOT the classification -
+    # that arrives in step 4 and applies the full rule set.
+    listed = [c for c in companies if c.is_listed]
+    out_of_scope = [c for c in companies if criteria.tier_for_country(c.country) is None]
+    print(f"\nUNIVERSE SHAPE ({len(companies)} companies)")
+    print(f"  listed (must be excluded)          {len(listed)}")
+    print(f"  outside target geographies         {len(out_of_scope)}")
+    print(f"  private and in scope               "
+          f"{len(companies) - len(listed) - len(out_of_scope)}")
+
+    signals = source.get_signals()
+    per_category: dict[str, int] = {}
+    for signal in signals:
+        per_category[signal.category] = per_category.get(signal.category, 0) + 1
+    print(f"\nSIGNALS ON FILE ({len(signals)})")
+    for category in criteria.trigger_categories:
+        print(f"  {category:<30} {per_category.get(category, 0)}")
+
+    print("\nCONNECTORS")
+    for name, source_class in sorted(REGISTRY.items()):
+        active = " (active)" if name == guardrails.active_data_source else ""
+        status = "implemented" if name == "mock" else "stub - not configured, no credentials"
+        print(f"  {name:<10} {status}{active}")
+
+    logger.log_event("run_finished", {"command": "universe", "tool_calls": logger.call_count})
+    summary = summarise_run(guardrails.audit_log_path, logger.run_id)
+    print("\nAUDIT LOG")
+    print(f"  run id      {summary['run_id']}")
+    print(f"  tool calls  {summary['tool_calls']} recorded this run")
+    for tool, count in sorted(summary["per_tool"].items()):
+        print(f"    {tool:<20} {count}")
+    print(f"\n{RULE}")
+    print(f"All company data above is FICTIONAL ({criteria.data_label}).")
+    print(RULE)
+    return 0
+
+
 def cmd_not_built(step: int, name: str):
     def _handler(_args: argparse.Namespace) -> int:
         print(f"'{name}' is not built yet - it arrives in step {step} of the build.")
@@ -148,6 +221,9 @@ def build_parser() -> argparse.ArgumentParser:
     check = subparsers.add_parser("check", help="verify configuration and guardrails")
     check.set_defaults(handler=cmd_check)
 
+    universe = subparsers.add_parser("universe", help="show the company universe")
+    universe.set_defaults(handler=cmd_universe)
+
     screening = subparsers.add_parser("screening", help="screen the universe (step 4)")
     screening.set_defaults(handler=cmd_not_built(4, "screening"))
 
@@ -164,7 +240,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         return args.handler(args)
-    except (ConfigError, GuardrailViolation) as exc:
+    except (ConfigError, GuardrailViolation, DataSourceError, SchemaError) as exc:
         print(f"\nSTOPPED: {exc}\n", file=sys.stderr)
         return 1
 
