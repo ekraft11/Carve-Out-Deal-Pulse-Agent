@@ -19,6 +19,9 @@ Turns static, export-based private company screening into a living pipeline.
 4. **Generates** a company profile, executive bios and an outreach-readiness note per
    active company.
 
+Everything lands in **`review_queue/pipeline.xlsx`**, a workbook the engine maintains
+rather than overwrites - see below.
+
 ## Design principles
 
 - **Mock-first.** A local MCP server serves realistic fake data for ~30 fictional
@@ -28,14 +31,20 @@ Turns static, export-based private company screening into a living pipeline.
   access, an explicit tool allowlist. `config/guardrails.json` holds these settings and
   the engine *refuses to start* if any of them is weakened.
 - **Human-in-the-loop.** The engine never sends anything anywhere. Every output lands
-  as markdown in `./review_queue/`.
+  in `./review_queue/` as a maintained Excel workbook plus markdown companions.
 - **Full audit trail.** Every data access is appended to `./audit_log.jsonl` with
   timestamp, tool name and parameters.
 
 ## Requirements
 
-Python 3.11+. No third-party packages needed for the screening and monitoring demo.
-(The optional MCP server needs the `mcp` package.)
+Python 3.11+ and one package for the Excel output:
+
+```bash
+pip install -r requirements.txt   # openpyxl
+```
+
+The screening and monitoring logic itself uses only the standard library.
+(The optional MCP server additionally needs the `mcp` package.)
 
 ## Usage
 
@@ -52,13 +61,43 @@ python run.py audit        # show what data the engine read
 ```
 config/criteria.json          the investment screen - thresholds are knobs, not code
 config/guardrails.json        the safety envelope, enforced at startup
+config/output.json            workbook filename and which columns belong to the reviewer
 data/mock_universe.json       30 fictional companies, their owners, executives and signals
 sourcing_engine/models.py     the data contract every source must satisfy
 sourcing_engine/data_sources/ base interface, mock backend, real-connector stubs
-review_queue/                 generated output for human review (git-ignored)
-state/                        JSON state files (git-ignored)
+review_queue/pipeline.xlsx    the maintained workbook (git-ignored, regenerated on each run)
+state/pipeline_state.json     human decisions: approved and pending promotions (git-ignored)
 audit_log.jsonl               append-only record of every data access (git-ignored)
 ```
+
+## The maintained workbook
+
+`review_queue/pipeline.xlsx` is a living document, not a repeated export. Column
+ownership is explicit:
+
+- **The engine owns the data columns** - classification, reason, EBITDA, trigger status -
+  and refreshes them on every run.
+- **You own the columns listed in `config/output.json`** (`Entscheidung`,
+  `Verantwortlich`, `Notiz`, `Naechster Schritt`). They are shaded amber, carry a
+  dropdown where useful, and the engine reads them before each run and writes them back
+  unchanged, matched on Company ID.
+
+Anything the engine changed between two runs is appended to the `08_Changelog` sheet,
+so "what moved since I last looked" is a question the file answers itself. The audit
+trail on `07_Audit_Trail` is appended the same way. Sheets a given command does not
+produce are carried over untouched, so `screening` never wipes what `monitoring` wrote.
+
+| Sheet | Written by |
+|---|---|
+| `00_README` | every run - criteria applied, counts, legend |
+| `01_Screening` | `screening` - all companies, classification, written reason |
+| `02_Watchlist` | `screening` |
+| `03_Active_Pipeline` | `screening` - human-approved promotions only |
+| `04_Trigger_Scan` | `monitoring` |
+| `05_Promotion_Proposals` | `monitoring` |
+| `06_Profiles` | `monitoring` |
+| `07_Audit_Trail` | every run, appended |
+| `08_Changelog` | every run, appended |
 
 ## Swapping in a real data source
 
@@ -73,8 +112,8 @@ inherited, so a new connector cannot bypass the allowlist or the audit log. Poin
 |------|-----------|--------|
 | 1 | Skeleton, criteria config, audit logger | done |
 | 2 | Mock universe + swappable data-source interface | done |
+| 4 | Screening engine + maintained Excel workbook | done |
 | 3 | Read-only MCP server | to do |
-| 4 | Screening engine | to do |
 | 5 | Monitoring engine | to do |
 | 6 | Output pack generator | to do |
 | 7 | Demo wiring + audit view | to do |

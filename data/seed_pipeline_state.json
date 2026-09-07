@@ -1,0 +1,21 @@
+{
+  "_disclaimer": "MOCK DATA. Seed state for the prototype, copied into state/pipeline_state.json on the first run. It represents one pre-existing human decision so that the demo has a company already in the active pipeline, rather than starting from an empty board.",
+  "data_label": "MOCK DATA",
+  "last_screening_run": "",
+  "last_monitoring_run": "",
+  "promotions": [
+    {
+      "company_id": "MOCK-011",
+      "company_name": "Bergstrand Ortopedi AB",
+      "status": "approved",
+      "trigger_signal_ids": ["MOCK-SIG-005"],
+      "trigger_category": "succession",
+      "trigger_headline": "Founder stepped back to chair, daughter appointed chief executive",
+      "proposed_on": "2025-11-06",
+      "proposed_by": "sourcing_engine (monitoring run)",
+      "decided_on": "2025-11-12",
+      "decided_by": "MOCK reviewer (seeded prior decision)",
+      "note": "Promotion approved after the November 2025 succession trigger. Retained in the seed so the demo shows a steady-state active pipeline company alongside a newly proposed one."
+    }
+  ]
+}

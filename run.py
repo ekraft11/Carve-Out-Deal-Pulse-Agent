@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from datetime import date
 
 from sourcing_engine import DATA_LABEL, __version__
 from sourcing_engine.audit import AuditLogger, format_run_table, summarise_run
@@ -25,6 +26,23 @@ from sourcing_engine.config import (
 )
 from sourcing_engine.data_sources import REGISTRY, DataSourceError, open_data_source
 from sourcing_engine.models import SchemaError
+from sourcing_engine.reporting import (
+    active_pipeline_sheet,
+    audit_sheet,
+    readme_lines,
+    screening_sheet,
+    watchlist_sheet,
+    write_screening_markdown,
+)
+from sourcing_engine.screening import (
+    CLASS_ACTIVE,
+    CLASS_EXCLUDED,
+    CLASS_WATCHLIST,
+    Screener,
+    ScreeningResult,
+)
+from sourcing_engine.state import PipelineState
+from sourcing_engine.workbook import PipelineWorkbook
 
 BANNER = f"Private Company Sourcing Engine v{__version__}  [{DATA_LABEL}]"
 RULE = "=" * 78
@@ -204,6 +222,94 @@ def cmd_universe(_args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_screening(_args: argparse.Namespace) -> int:
+    """Screen the universe, classify with reasons, and maintain the workbook."""
+    settings = load_settings()
+    guardrails, criteria, output = settings.guardrails, settings.criteria, settings.output
+    settings.ensure_output_dirs()
+
+    logger = AuditLogger.for_run(guardrails, command="screening")
+    source = open_data_source(guardrails, logger)
+    state = PipelineState.load(guardrails)
+
+    print(RULE)
+    print(BANNER)
+    print(f"data source: {source.source_label}")
+    print(RULE)
+
+    as_of = getattr(source, "as_of", None) or date.today()
+    screener = Screener(criteria, source, as_of)
+    result = ScreeningResult(
+        verdicts=screener.screen_all(), as_of=as_of, run_id=logger.run_id
+    )
+    # Screening produces watchlist or excluded only. Companies reach the active
+    # pipeline solely because a human approved a promotion in an earlier run.
+    result.apply_approved_promotions(state.approved_ids)
+
+    counts = result.counts
+    print(f"\nCLASSIFIED {len(result.verdicts)} COMPANIES")
+    print(f"  active pipeline (human-approved)   {counts[CLASS_ACTIVE]}")
+    print(f"  watchlist                          {counts[CLASS_WATCHLIST]}")
+    print(f"  excluded                           {counts[CLASS_EXCLUDED]}")
+    print(f"  flagged for human review           {len(result.flagged)}")
+
+    print("\nFLAGGED FOR HUMAN REVIEW (not silently sorted)")
+    for verdict in result.flagged:
+        print(f"  {verdict.company_id}  {verdict.name[:34]:<34} -> {verdict.classification}")
+        for flag in verdict.review_flags:
+            print(f"            - {flag}")
+
+    print("\nEXCLUDED")
+    for verdict in result.by_classification(CLASS_EXCLUDED):
+        first_reason = verdict.exclusion_reasons[0] if verdict.exclusion_reasons else ""
+        print(f"  {verdict.company_id}  {verdict.name[:34]:<34} {first_reason[:78]}")
+
+    # -- the maintained workbook -------------------------------------------
+    logger.log_event("run_finished", {"command": "screening", "tool_calls": logger.call_count})
+    specs = [
+        screening_sheet(result, output.decision_options),
+        watchlist_sheet(result, output.decision_options),
+        active_pipeline_sheet(result, state, output.decision_options),
+        audit_sheet(guardrails, logger.run_id),
+    ]
+    workbook = PipelineWorkbook(settings.workbook_path, output, guardrails)
+    report = workbook.write(
+        specs,
+        readme_lines(criteria, guardrails, result, state, source.source_label, "screening"),
+        run_id=logger.run_id,
+    )
+
+    state.last_screening_run = logger.run_id
+    state_path = state.save(guardrails)
+
+    markdown_path = None
+    if output.write_markdown_packs:
+        markdown_path = write_screening_markdown(
+            result, criteria, guardrails, output, source.source_label
+        )
+
+    print("\nOUTPUT")
+    verb = "created" if report.created else "updated"
+    print(f"  workbook {verb}   ./{report.path.relative_to(REPO_ROOT)}")
+    print(f"    sheets written    {', '.join(report.sheets_written)}")
+    if report.sheets_carried:
+        print(f"    sheets preserved  {', '.join(report.sheets_carried)}")
+    print(f"    your entries kept {report.human_values_preserved} "
+          f"(columns: {', '.join(output.human_owned_columns)})")
+    print(f"    changelog entries {len(report.changelog_entries)} added this run")
+    if markdown_path:
+        print(f"  markdown summary  ./{markdown_path.relative_to(REPO_ROOT)}")
+    print(f"  state             ./{state_path.relative_to(REPO_ROOT)}")
+    print(f"  audit log         ./{guardrails.audit_log_path.relative_to(REPO_ROOT)} "
+          f"({logger.call_count} entries this run)")
+
+    print(f"\n{RULE}")
+    print(f"All company data is FICTIONAL ({criteria.data_label}). "
+          f"Verify before relying on or sharing any of it.")
+    print(RULE)
+    return 0
+
+
 def cmd_not_built(step: int, name: str):
     def _handler(_args: argparse.Namespace) -> int:
         print(f"'{name}' is not built yet - it arrives in step {step} of the build.")
@@ -224,8 +330,10 @@ def build_parser() -> argparse.ArgumentParser:
     universe = subparsers.add_parser("universe", help="show the company universe")
     universe.set_defaults(handler=cmd_universe)
 
-    screening = subparsers.add_parser("screening", help="screen the universe (step 4)")
-    screening.set_defaults(handler=cmd_not_built(4, "screening"))
+    screening = subparsers.add_parser(
+        "screening", help="screen the universe and update the workbook"
+    )
+    screening.set_defaults(handler=cmd_screening)
 
     monitoring = subparsers.add_parser("monitoring", help="scan for triggers (step 5)")
     monitoring.set_defaults(handler=cmd_not_built(5, "monitoring"))

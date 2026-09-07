@@ -117,6 +117,8 @@
         "free_float_pct": 0.0,
         "ownership_as_of": "2026-06-30",
         "governance_notes": "Shareholder agreement grants the minority investor veto rights over the annual budget, acquisitions and senior hires. Effective control cannot be determined from the available filing.",
+        "control_contested": true,
+        "control_contested_note": "Family holds 55 percent of shares, but the minority investor's consent rights over budget, acquisitions and senior hires mean the share split does not settle who controls the company.",
         "holders": [
           {"name": "Dahlmann family", "holder_type": "family", "stake_pct": 55.0, "since_year": 1996},
           {"name": "Rhein Kapital Partners III", "holder_type": "pe_fund", "stake_pct": 45.0, "since_year": 2022, "notes": "Entered via a partial family exit; reported to hold extensive consent rights."}
@@ -355,6 +357,8 @@
         "free_float_pct": 0.0,
         "ownership_as_of": "2026-06-30",
         "governance_notes": "Family retains a bare majority of shares but the board is split equally between family and investor nominees, with a rotating chair.",
+        "control_contested": true,
+        "control_contested_note": "A 51/49 share split with an evenly divided board and a rotating chair. Formally family controlled, in practice a joint venture.",
         "holders": [
           {"name": "Kirkegaard family", "holder_type": "family", "stake_pct": 51.0, "since_year": 2001},
           {"name": "Jutland Growth Partners", "holder_type": "pe_fund", "stake_pct": 49.0, "since_year": 2023}

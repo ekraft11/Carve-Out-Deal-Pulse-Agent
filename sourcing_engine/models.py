@@ -140,6 +140,12 @@ class Ownership:
     governance_notes: str = ""
     ownership_as_of: str | None = None
     data_label: str = DATA_LABEL_DEFAULT
+    #: Set by the data source when the share split does not settle who
+    #: actually controls the company (investor veto rights, split boards).
+    #: A structured field rather than keyword-matching on prose, so a real
+    #: connector has one explicit thing to populate.
+    control_contested: bool = False
+    control_contested_note: str = ""
 
     @property
     def total_stake_pct(self) -> float:
@@ -161,6 +167,8 @@ class Ownership:
             governance_notes=record.get("governance_notes", ""),
             ownership_as_of=record.get("ownership_as_of"),
             data_label=record.get("data_label", DATA_LABEL_DEFAULT),
+            control_contested=bool(record.get("control_contested", False)),
+            control_contested_note=record.get("control_contested_note", ""),
         )
 
 

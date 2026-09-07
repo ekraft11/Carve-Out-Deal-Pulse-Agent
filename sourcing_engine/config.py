@@ -27,6 +27,7 @@ DATA_DIR = REPO_ROOT / "data"
 
 CRITERIA_PATH = CONFIG_DIR / "criteria.json"
 GUARDRAILS_PATH = CONFIG_DIR / "guardrails.json"
+OUTPUT_PATH = CONFIG_DIR / "output.json"
 
 
 class ConfigError(RuntimeError):
@@ -303,17 +304,61 @@ def load_criteria(path: Path = CRITERIA_PATH) -> Criteria:
 
 
 @dataclass(frozen=True)
+class OutputConfig:
+    """How the maintained workbook and markdown packs are written."""
+
+    workbook_filename: str = "pipeline.xlsx"
+    write_markdown_packs: bool = True
+    human_owned_columns: tuple[str, ...] = ("Entscheidung", "Verantwortlich", "Notiz")
+    decision_options: tuple[str, ...] = ()
+    approval_options: tuple[str, ...] = ()
+    font_name: str = "Arial"
+    changelog_enabled: bool = True
+
+    @classmethod
+    def load(cls, path: Path = OUTPUT_PATH) -> "OutputConfig":
+        if not path.exists():
+            return cls()
+        raw = _load_json(path)
+        columns = tuple(raw.get("human_owned_columns", cls.human_owned_columns))
+        if not columns:
+            raise ConfigError(
+                "output.json lists no human_owned_columns. At least one column "
+                "must belong to the reviewer, otherwise the workbook is an "
+                "export rather than a maintained document."
+            )
+        return cls(
+            workbook_filename=str(raw.get("workbook_filename", "pipeline.xlsx")),
+            write_markdown_packs=bool(raw.get("write_markdown_packs", True)),
+            human_owned_columns=columns,
+            decision_options=tuple(raw.get("decision_options", ())),
+            approval_options=tuple(raw.get("approval_options", ())),
+            font_name=str(raw.get("font_name", "Arial")),
+            changelog_enabled=bool(raw.get("changelog_enabled", True)),
+        )
+
+
+@dataclass(frozen=True)
 class Settings:
     """Everything the engine needs to start up."""
 
     criteria: Criteria
     guardrails: Guardrails
+    output: OutputConfig
 
     def ensure_output_dirs(self) -> None:
         for directory in (self.guardrails.review_queue_dir, self.guardrails.state_dir):
             directory.mkdir(parents=True, exist_ok=True)
 
+    @property
+    def workbook_path(self) -> Path:
+        return self.guardrails.review_queue_dir / self.output.workbook_filename
+
 
 def load_settings() -> Settings:
-    """Load criteria + guardrails, or fail loudly with a readable message."""
-    return Settings(criteria=load_criteria(), guardrails=load_guardrails())
+    """Load criteria + guardrails + output settings, or fail loudly."""
+    return Settings(
+        criteria=load_criteria(),
+        guardrails=load_guardrails(),
+        output=OutputConfig.load(),
+    )
