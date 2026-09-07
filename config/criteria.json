@@ -1,0 +1,83 @@
+{
+  "config_name": "Triton healthcare private company screening criteria",
+  "version": "0.1.0",
+  "data_label": "MOCK DATA",
+  "notes": "Prototype criteria. Every threshold here is a knob: change the number, re-run screening, no code changes.",
+
+  "listing": {
+    "comment": "Hard gate. A listed company is excluded regardless of ownership concentration.",
+    "exclude_if_listed": true,
+    "excluded_listing_statuses": [
+      "listed_main_market",
+      "listed_secondary_market",
+      "listed"
+    ],
+    "accepted_listing_statuses": [
+      "private"
+    ]
+  },
+
+  "ownership": {
+    "comment": "Family-/founder-owned. PE minority stake acceptable, PE majority excluded.",
+    "eligible_control_types": [
+      "family_owned",
+      "founder_owned",
+      "founder_and_family_owned",
+      "family_owned_with_pe_minority",
+      "founder_owned_with_pe_minority"
+    ],
+    "excluded_control_types": [
+      "pe_majority",
+      "corporate_subsidiary",
+      "state_owned",
+      "listed",
+      "widely_held",
+      "employee_owned_cooperative"
+    ],
+    "min_family_founder_stake_pct": 50.0,
+    "max_pe_stake_pct": 49.9,
+    "borderline_family_founder_stake_band_pct": [45.0, 55.0],
+    "borderline_pe_stake_band_pct": [40.0, 49.9]
+  },
+
+  "financial": {
+    "comment": "Minimum EBITDA in EUR millions. The borderline band catches companies close enough to the line that a human should look.",
+    "min_ebitda_eur_m": 20.0,
+    "borderline_ebitda_band_eur_m": [18.0, 22.0],
+    "reject_below_eur_m": 18.0
+  },
+
+  "geography": {
+    "comment": "DACH and Nordics primary, UK/Benelux secondary. Anything else is out of scope.",
+    "regions": {
+      "DACH": { "tier": "primary", "countries": ["DE", "AT", "CH"] },
+      "Nordics": { "tier": "primary", "countries": ["SE", "NO", "DK", "FI", "IS"] },
+      "UK": { "tier": "secondary", "countries": ["GB"] },
+      "Benelux": { "tier": "secondary", "countries": ["NL", "BE", "LU"] }
+    },
+    "accepted_tiers": ["primary", "secondary"],
+    "out_of_scope_action": "exclude"
+  },
+
+  "classification": {
+    "comment": "Structural fit alone never reaches active pipeline. It parks on the watchlist until a behavioural trigger is confirmed, and promotion needs a human.",
+    "buckets": ["active_pipeline", "watchlist", "excluded"],
+    "structural_fit_without_trigger": "watchlist",
+    "require_confirmed_trigger_for_active_pipeline": true,
+    "borderline_action": "flag_for_human_review"
+  },
+
+  "triggers": {
+    "comment": "Four behavioural signal categories. A signal must clear min_confidence_to_confirm AND be corroborated to count as confirmed.",
+    "categories": [
+      "succession",
+      "c_suite_change",
+      "ownership_governance_change",
+      "capital_event"
+    ],
+    "min_confidence_to_confirm": 0.7,
+    "max_signal_age_days": 180,
+    "require_corroboration": true,
+    "promotion_requires_human_approval": true
+  }
+}
