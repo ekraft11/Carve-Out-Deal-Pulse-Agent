@@ -1,0 +1,31 @@
+{
+  "config_name": "Output settings",
+  "version": "0.1.0",
+  "comment": "Controls the maintained Excel workbook. The engine owns the data columns and refreshes them on every run. The columns listed under human_owned_columns belong to you: the engine reads them before writing and puts them back unchanged, matched on Company ID.",
+
+  "workbook_filename": "pipeline.xlsx",
+  "write_markdown_packs": true,
+
+  "human_owned_columns": [
+    "Entscheidung",
+    "Verantwortlich",
+    "Notiz",
+    "Naechster Schritt"
+  ],
+
+  "decision_options": [
+    "Verfolgen",
+    "Beobachten",
+    "Zurueckstellen",
+    "Verwerfen"
+  ],
+
+  "approval_options": [
+    "Freigegeben",
+    "Abgelehnt",
+    "Zurueckgestellt"
+  ],
+
+  "font_name": "Arial",
+  "changelog_enabled": true
+}

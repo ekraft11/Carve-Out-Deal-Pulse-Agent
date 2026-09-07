@@ -1,0 +1,3 @@
+# The screening and monitoring engine itself needs only the Python standard
+# library. openpyxl is required for the maintained Excel workbook.
+openpyxl>=3.1

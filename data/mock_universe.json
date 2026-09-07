@@ -1,0 +1,1038 @@
+{
+  "_disclaimer": "MOCK DATA. Every company, person, financial figure, shareholder and event in this file is INVENTED for a prototype demonstration. Any resemblance to a real company or person is coincidental and unintended. Nothing here may be used as information about any real business.",
+  "data_label": "MOCK DATA",
+  "universe_name": "Fictional European healthcare private company universe",
+  "as_of": "2026-09-07",
+  "currency_note": "All monetary values are EUR millions. A real connector would convert from local currency at the data layer.",
+
+  "companies": [
+    {
+      "company_id": "MOCK-001",
+      "name": "Nordvita Kliniken GmbH",
+      "country": "DE",
+      "city": "Muenster",
+      "subsector": "Outpatient specialist clinics",
+      "description": "Operator of 34 outpatient orthopaedic and sports medicine clinics across western Germany, built up from a single founder practice.",
+      "founded_year": 1987,
+      "employees": 1450,
+      "revenue_eur_m": 210.0,
+      "ebitda_eur_m": 34.2,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder chairs the advisory board. Two of three managing directors are family members. No external capital taken to date.",
+        "holders": [
+          {"name": "Hollweg family (first and second generation)", "holder_type": "family", "stake_pct": 100.0, "since_year": 1987, "notes": "Held through a family holding company."}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Reinhard Hollweg", "title": "Founder and Chairman of the Advisory Board", "age": 71, "in_role_since": 1987, "is_founder": true, "is_family_member": true, "background": ["Consultant orthopaedic surgeon, university hospital (1979-1987)", "Founded Nordvita in 1987 as a single practice in Muenster"]},
+        {"name": "Katharina Hollweg-Brandt", "title": "Managing Director", "age": 44, "in_role_since": 2016, "is_family_member": true, "background": ["Head of Operations, Nordvita Kliniken (2011-2016)", "Healthcare M&A, mid-market advisory boutique (2006-2011)"]},
+        {"name": "Stefan Weiler", "title": "Chief Financial Officer", "age": 52, "in_role_since": 2019, "background": ["Finance Director, regional hospital group (2012-2019)", "Audit and transaction services, large accounting firm (2001-2012)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-002",
+      "name": "Helvetacare Diagnostics AG",
+      "country": "CH",
+      "city": "Winterthur",
+      "subsector": "Laboratory diagnostics",
+      "description": "Independent clinical laboratory network serving physician practices and small hospitals in German-speaking Switzerland.",
+      "founded_year": 1994,
+      "employees": 980,
+      "revenue_eur_m": 168.5,
+      "ebitda_eur_m": 41.5,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "founder_owned_with_pe_minority",
+        "family_founder_stake_pct": 72.0,
+        "pe_stake_pct": 28.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-03-31",
+        "governance_notes": "Minority investor holds one of five board seats with customary minority protections only. Founder retains operational and shareholder control.",
+        "holders": [
+          {"name": "Ueli Brunner (founder)", "holder_type": "founder", "stake_pct": 72.0, "since_year": 1994},
+          {"name": "Kestrel Health Partners II", "holder_type": "pe_fund", "stake_pct": 28.0, "since_year": 2021, "notes": "Growth minority investment to fund laboratory automation."}
+        ]
+      },
+      "executives": [
+        {"name": "Ueli Brunner", "title": "Founder and Chief Executive Officer", "age": 63, "in_role_since": 1994, "is_founder": true, "background": ["Clinical chemist, cantonal hospital laboratory (1988-1994)", "Founded Helvetacare in 1994"]},
+        {"name": "Dr. Marlene Ziegler", "title": "Chief Medical Officer", "age": 49, "in_role_since": 2015, "background": ["Head of Clinical Pathology, private hospital group (2009-2015)", "Specialist training in laboratory medicine"]},
+        {"name": "Nils Aebischer", "title": "Chief Financial Officer", "age": 41, "in_role_since": 2026, "background": ["Chief Financial Officer, Baumgartner Zahnklinik AG, a private-equity majority dental platform (2021-2026)", "Corporate finance, healthcare coverage team (2013-2021)"], "notes": "Appointed August 2026."}
+      ]
+    },
+    {
+      "company_id": "MOCK-003",
+      "name": "Wienstein Rehazentren GmbH",
+      "country": "AT",
+      "city": "Graz",
+      "subsector": "Rehabilitation clinics",
+      "description": "Operator of nine inpatient and outpatient rehabilitation centres in southern Austria, focused on orthopaedic and neurological rehabilitation.",
+      "founded_year": 1979,
+      "employees": 1120,
+      "revenue_eur_m": 142.0,
+      "ebitda_eur_m": 26.3,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned_with_pe_minority",
+        "family_founder_stake_pct": 62.0,
+        "pe_stake_pct": 38.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Second-generation family holds a clear majority. Minority investor entered in 2019 to fund two greenfield clinics.",
+        "holders": [
+          {"name": "Wienstein family (second generation)", "holder_type": "family", "stake_pct": 62.0, "since_year": 1979},
+          {"name": "Alpenrose Capital Partners", "holder_type": "pe_fund", "stake_pct": 38.0, "since_year": 2019}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Anneliese Wienstein", "title": "Managing Partner", "age": 58, "in_role_since": 2003, "is_family_member": true, "background": ["Head of Rehabilitation Medicine, Wienstein Rehazentren (1996-2003)", "Specialist in physical medicine and rehabilitation"]},
+        {"name": "Georg Wienstein", "title": "Medical Director", "age": 55, "in_role_since": 2008, "is_family_member": true, "background": ["Senior physician, neurological rehabilitation (1998-2008)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-004",
+      "name": "Rheinpflege Homecare GmbH",
+      "country": "DE",
+      "city": "Koeln",
+      "subsector": "Homecare and outpatient nursing",
+      "description": "Provider of outpatient nursing and homecare services across North Rhine-Westphalia, operating from 48 local branches.",
+      "founded_year": 1996,
+      "employees": 2300,
+      "revenue_eur_m": 186.0,
+      "ebitda_eur_m": 23.1,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned_with_pe_minority",
+        "family_founder_stake_pct": 55.0,
+        "pe_stake_pct": 45.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Shareholder agreement grants the minority investor veto rights over the annual budget, acquisitions and senior hires. Effective control cannot be determined from the available filing.",
+        "control_contested": true,
+        "control_contested_note": "Family holds 55 percent of shares, but the minority investor's consent rights over budget, acquisitions and senior hires mean the share split does not settle who controls the company.",
+        "holders": [
+          {"name": "Dahlmann family", "holder_type": "family", "stake_pct": 55.0, "since_year": 1996},
+          {"name": "Rhein Kapital Partners III", "holder_type": "pe_fund", "stake_pct": 45.0, "since_year": 2022, "notes": "Entered via a partial family exit; reported to hold extensive consent rights."}
+        ]
+      },
+      "executives": [
+        {"name": "Petra Dahlmann", "title": "Chief Executive Officer", "age": 61, "in_role_since": 1996, "is_founder": true, "is_family_member": true, "background": ["Registered nurse and branch manager, regional care provider (1988-1996)", "Founded Rheinpflege in 1996"]},
+        {"name": "Jonas Dahlmann", "title": "Chief Operating Officer", "age": 36, "in_role_since": 2020, "is_family_member": true, "background": ["Operations manager, Rheinpflege Homecare (2016-2020)", "Management consulting, healthcare practice (2013-2016)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-005",
+      "name": "Alpenmed Instrumente GmbH",
+      "country": "DE",
+      "city": "Tuttlingen",
+      "subsector": "Surgical instruments",
+      "description": "Third-generation manufacturer of specialist surgical instruments, exporting to more than 40 countries.",
+      "founded_year": 1962,
+      "employees": 640,
+      "revenue_eur_m": 96.0,
+      "ebitda_eur_m": 19.4,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Third-generation family ownership, no external capital.",
+        "holders": [
+          {"name": "Kastner family (third generation)", "holder_type": "family", "stake_pct": 100.0, "since_year": 1962}
+        ]
+      },
+      "executives": [
+        {"name": "Bernd Kastner", "title": "Managing Director", "age": 59, "in_role_since": 2001, "is_family_member": true, "background": ["Head of Production, Alpenmed Instrumente (1994-2001)", "Precision engineering apprenticeship and degree"]},
+        {"name": "Lena Kastner", "title": "Head of Export Sales", "age": 33, "in_role_since": 2019, "is_family_member": true, "background": ["Regional sales manager, medical device distributor (2016-2019)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-006",
+      "name": "Baumgartner Zahnklinik AG",
+      "country": "CH",
+      "city": "Zug",
+      "subsector": "Dental clinics",
+      "description": "Dental clinic platform with 71 practices across Switzerland and southern Germany, built through acquisition since 2021.",
+      "founded_year": 2004,
+      "employees": 1550,
+      "revenue_eur_m": 176.0,
+      "ebitda_eur_m": 30.2,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "pe_majority",
+        "family_founder_stake_pct": 22.0,
+        "pe_stake_pct": 71.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Private equity majority since the 2021 buyout. Founder retained a rollover stake and the chairmanship.",
+        "holders": [
+          {"name": "Northlake Equity Partners V", "holder_type": "pe_fund", "stake_pct": 71.0, "since_year": 2021},
+          {"name": "Baumgartner family", "holder_type": "family", "stake_pct": 22.0, "since_year": 2004, "notes": "Rollover stake."},
+          {"name": "Management incentive pool", "holder_type": "management", "stake_pct": 7.0, "since_year": 2021}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Silvan Baumgartner", "title": "Founder and Chairman", "age": 68, "in_role_since": 2004, "is_founder": true, "is_family_member": true, "background": ["Practising dentist and practice owner (1985-2004)", "Founded the group in 2004"]},
+        {"name": "Ruth Egli", "title": "Chief Executive Officer", "age": 51, "in_role_since": 2021, "background": ["Chief Operating Officer, European dental platform (2017-2021)", "Healthcare operations, private hospital group (2009-2017)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-007",
+      "name": "Suedtirol Pharma Logistik GmbH",
+      "country": "AT",
+      "city": "Innsbruck",
+      "subsector": "Pharmaceutical logistics",
+      "description": "Temperature-controlled pharmaceutical distribution and third-party logistics for regional wholesalers.",
+      "founded_year": 1988,
+      "employees": 410,
+      "revenue_eur_m": 88.0,
+      "ebitda_eur_m": 12.6,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family owned since foundation.",
+        "holders": [
+          {"name": "Untermair family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1988}
+        ]
+      },
+      "executives": [
+        {"name": "Markus Untermair", "title": "Managing Director", "age": 57, "in_role_since": 1998, "is_family_member": true, "background": ["Logistics manager, pharmaceutical wholesaler (1991-1998)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-008",
+      "name": "Kranzberg Medizintechnik SE",
+      "country": "DE",
+      "city": "Erlangen",
+      "subsector": "Medical technology",
+      "description": "Manufacturer of imaging accessories and patient positioning systems, listed since 2007 but still family controlled.",
+      "founded_year": 1971,
+      "employees": 3400,
+      "revenue_eur_m": 520.0,
+      "ebitda_eur_m": 78.5,
+      "listing_status": "listed_main_market",
+      "ticker": "MOCK:KZB",
+      "financials_as_of": "FY2025",
+      "notes": "Included in the universe deliberately as a test case: high family ownership concentration but publicly listed.",
+      "ownership": {
+        "control_type": "listed",
+        "family_founder_stake_pct": 58.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 42.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family holds 58 percent of shares and 64 percent of voting rights through a holding vehicle. Remainder in free float since the 2007 initial public offering.",
+        "holders": [
+          {"name": "Kranzberg family holding vehicle", "holder_type": "family", "stake_pct": 58.0, "since_year": 1971},
+          {"name": "Free float", "holder_type": "free_float", "stake_pct": 42.0, "since_year": 2007}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Ulrike Kranzberg", "title": "Chair of the Supervisory Board", "age": 66, "in_role_since": 2011, "is_family_member": true, "background": ["Managing Director, Kranzberg Medizintechnik (1994-2011)"]},
+        {"name": "Thomas Reithmeier", "title": "Chief Executive Officer", "age": 54, "in_role_since": 2018, "background": ["Division President, listed medical technology group (2012-2018)", "Engineering and general management roles (1996-2012)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-009",
+      "name": "Thalmann Laborsysteme AG",
+      "country": "CH",
+      "city": "Basel",
+      "subsector": "Laboratory automation",
+      "description": "Supplier of laboratory automation and sample handling systems, held as a division of an industrial group since 2015.",
+      "founded_year": 1983,
+      "employees": 890,
+      "revenue_eur_m": 155.0,
+      "ebitda_eur_m": 28.0,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "corporate_subsidiary",
+        "family_founder_stake_pct": 0.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Wholly owned subsidiary of a diversified industrial group. Founding family exited in 2015.",
+        "holders": [
+          {"name": "Verdanix Industrial Group AG", "holder_type": "corporate", "stake_pct": 100.0, "since_year": 2015}
+        ]
+      },
+      "executives": [
+        {"name": "Andrea Suter", "title": "Managing Director", "age": 48, "in_role_since": 2019, "background": ["Head of Business Unit, industrial automation group (2013-2019)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-010",
+      "name": "Elbtal Klinikgruppe GmbH",
+      "country": "DE",
+      "city": "Dresden",
+      "subsector": "Private hospitals",
+      "description": "Operator of six private acute care hospitals and four day-surgery centres in eastern Germany.",
+      "founded_year": 1992,
+      "employees": 2900,
+      "revenue_eur_m": 340.0,
+      "ebitda_eur_m": 47.8,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder-led, family owned. No external shareholders.",
+        "holders": [
+          {"name": "Lechner family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1992}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Hans-Peter Lechner", "title": "Founder and Chief Executive Officer", "age": 67, "in_role_since": 1992, "is_founder": true, "is_family_member": true, "background": ["Chief physician, municipal hospital (1984-1992)", "Founded Elbtal in 1992 with a single clinic in Dresden"]},
+        {"name": "Miriam Lechner-Vogt", "title": "Deputy Chief Executive Officer", "age": 39, "in_role_since": 2021, "is_family_member": true, "background": ["Director of Hospital Operations, Elbtal Klinikgruppe (2017-2021)", "Health economics research and consulting (2012-2017)"]},
+        {"name": "Andreas Kirsch", "title": "Chief Financial Officer", "age": 48, "in_role_since": 2017, "background": ["Head of Controlling, private hospital operator (2010-2017)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-011",
+      "name": "Bergstrand Ortopedi AB",
+      "country": "SE",
+      "city": "Goeteborg",
+      "subsector": "Orthopaedic clinics",
+      "description": "Specialist orthopaedic and sports injury clinics operating 12 sites in western Sweden under regional care contracts.",
+      "founded_year": 1998,
+      "employees": 720,
+      "revenue_eur_m": 118.0,
+      "ebitda_eur_m": 24.7,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "founder_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-03-31",
+        "governance_notes": "Founder and family hold the entire share capital. Generational transition executed in late 2025.",
+        "holders": [
+          {"name": "Bergstrand family", "holder_type": "founder", "stake_pct": 100.0, "since_year": 1998}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Ake Bergstrand", "title": "Founder and Chairman", "age": 69, "in_role_since": 1998, "is_founder": true, "is_family_member": true, "background": ["Consultant orthopaedic surgeon, regional hospital (1986-1998)", "Founded Bergstrand Ortopedi in 1998"]},
+        {"name": "Sofia Bergstrand Nilsson", "title": "Chief Executive Officer", "age": 41, "in_role_since": 2025, "is_family_member": true, "background": ["Chief Operating Officer, Bergstrand Ortopedi (2020-2025)", "Strategy consulting, Nordic healthcare practice (2011-2020)"]},
+        {"name": "Peter Lund", "title": "Chief Financial Officer", "age": 45, "in_role_since": 2022, "background": ["Finance Director, Nordic dental chain (2016-2022)", "Transaction services (2006-2016)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-012",
+      "name": "Vaeksthus Dental A/S",
+      "country": "DK",
+      "city": "Aarhus",
+      "subsector": "Dental clinics",
+      "description": "Dental clinic group with 54 practices in Denmark, combining general dentistry with specialist orthodontic centres.",
+      "founded_year": 2001,
+      "employees": 860,
+      "revenue_eur_m": 132.0,
+      "ebitda_eur_m": 27.4,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned_with_pe_minority",
+        "family_founder_stake_pct": 51.0,
+        "pe_stake_pct": 49.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family retains a bare majority of shares but the board is split equally between family and investor nominees, with a rotating chair.",
+        "control_contested": true,
+        "control_contested_note": "A 51/49 share split with an evenly divided board and a rotating chair. Formally family controlled, in practice a joint venture.",
+        "holders": [
+          {"name": "Kirkegaard family", "holder_type": "family", "stake_pct": 51.0, "since_year": 2001},
+          {"name": "Jutland Growth Partners", "holder_type": "pe_fund", "stake_pct": 49.0, "since_year": 2023}
+        ]
+      },
+      "executives": [
+        {"name": "Mette Kirkegaard", "title": "Chief Executive Officer", "age": 47, "in_role_since": 2014, "is_family_member": true, "background": ["Clinic Director, Vaeksthus Dental (2007-2014)", "Practising dentist (2003-2007)"]},
+        {"name": "Lars Kirkegaard", "title": "Chairman", "age": 72, "in_role_since": 2001, "is_founder": true, "is_family_member": true, "background": ["Founded the group in 2001 from two practices", "Practising dentist and practice owner (1979-2001)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-013",
+      "name": "Suomi Terveys Oy",
+      "country": "FI",
+      "city": "Tampere",
+      "subsector": "Occupational health services",
+      "description": "Provider of occupational health and preventive care services to Finnish corporate and public sector employers.",
+      "founded_year": 1990,
+      "employees": 1350,
+      "revenue_eur_m": 205.0,
+      "ebitda_eur_m": 33.0,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family owned across two generations, no external capital.",
+        "holders": [
+          {"name": "Rautio family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1990}
+        ]
+      },
+      "executives": [
+        {"name": "Juhani Rautio", "title": "Chairman", "age": 64, "in_role_since": 1990, "is_founder": true, "is_family_member": true, "background": ["Occupational health physician, industrial employer (1982-1990)", "Founded Suomi Terveys in 1990"]},
+        {"name": "Aino Rautio-Salo", "title": "Chief Executive Officer", "age": 43, "in_role_since": 2019, "is_family_member": true, "background": ["Director of Service Development, Suomi Terveys (2014-2019)", "Public health administration (2008-2014)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-014",
+      "name": "Fjordklinikken AS",
+      "country": "NO",
+      "city": "Bergen",
+      "subsector": "Private hospitals",
+      "description": "Private hospital and elective surgery operator with three sites on the Norwegian west coast.",
+      "founded_year": 2006,
+      "employees": 640,
+      "revenue_eur_m": 128.0,
+      "ebitda_eur_m": 25.6,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "pe_majority",
+        "family_founder_stake_pct": 20.0,
+        "pe_stake_pct": 80.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Private equity majority since 2020. Founder retains a minority stake and the medical directorship.",
+        "holders": [
+          {"name": "Vestland Capital Fund IV", "holder_type": "pe_fund", "stake_pct": 80.0, "since_year": 2020},
+          {"name": "Dr. Eirik Haugen (founder)", "holder_type": "founder", "stake_pct": 20.0, "since_year": 2006}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Eirik Haugen", "title": "Founder and Medical Director", "age": 58, "in_role_since": 2006, "is_founder": true, "background": ["Consultant surgeon, university hospital (1996-2006)"]},
+        {"name": "Ingrid Solberg", "title": "Chief Executive Officer", "age": 50, "in_role_since": 2020, "background": ["Chief Executive Officer, Nordic elective care operator (2015-2020)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-015",
+      "name": "Karlsson Medicinteknik AB",
+      "country": "SE",
+      "city": "Lund",
+      "subsector": "Medical device components",
+      "description": "Contract developer and manufacturer of precision components for medical devices, listed on a secondary market since 2014.",
+      "founded_year": 1985,
+      "employees": 1100,
+      "revenue_eur_m": 190.0,
+      "ebitda_eur_m": 29.4,
+      "listing_status": "listed_secondary_market",
+      "ticker": "MOCK:KMTK",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: founder still the largest shareholder, but the company is listed.",
+      "ownership": {
+        "control_type": "listed",
+        "family_founder_stake_pct": 44.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 56.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder remains the largest single shareholder at 44 percent following the 2014 listing.",
+        "holders": [
+          {"name": "Gunnar Karlsson (founder)", "holder_type": "founder", "stake_pct": 44.0, "since_year": 1985},
+          {"name": "Free float", "holder_type": "free_float", "stake_pct": 56.0, "since_year": 2014}
+        ]
+      },
+      "executives": [
+        {"name": "Gunnar Karlsson", "title": "Founder and Board Member", "age": 74, "in_role_since": 1985, "is_founder": true, "background": ["Design engineer, medical device manufacturer (1974-1985)", "Founded Karlsson Medicinteknik in 1985"]},
+        {"name": "Emma Sjoberg", "title": "Chief Executive Officer", "age": 47, "in_role_since": 2019, "background": ["Chief Operating Officer, Karlsson Medicinteknik (2015-2019)", "Manufacturing management, automotive supplier (2004-2015)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-016",
+      "name": "Aalborg Biosimilars A/S",
+      "country": "DK",
+      "city": "Aalborg",
+      "subsector": "Biosimilar manufacturing",
+      "description": "Contract manufacturer of biosimilar drug substance for European generics companies.",
+      "founded_year": 1994,
+      "employees": 780,
+      "revenue_eur_m": 160.0,
+      "ebitda_eur_m": 31.2,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: an ownership form that is neither family/founder nor private equity.",
+      "ownership": {
+        "control_type": "foundation_owned",
+        "family_founder_stake_pct": 0.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Danish industrial foundation holds the entire share capital. No family shareholding and no private equity. Two descendants of the founder sit on the foundation board.",
+        "holders": [
+          {"name": "Nyholm Foundation", "holder_type": "foundation", "stake_pct": 100.0, "since_year": 1994}
+        ]
+      },
+      "executives": [
+        {"name": "Birgitte Nyholm", "title": "Foundation Board Member", "age": 57, "in_role_since": 2012, "is_family_member": true, "background": ["Head of Regulatory Affairs, pharmaceutical manufacturer (2001-2012)"]},
+        {"name": "Claus Winther", "title": "Chief Executive Officer", "age": 52, "in_role_since": 2018, "background": ["Site General Manager, biologics manufacturing (2011-2018)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-017",
+      "name": "Nord Rehab Partners AB",
+      "country": "SE",
+      "city": "Uppsala",
+      "subsector": "Rehabilitation services",
+      "description": "Outpatient rehabilitation and physiotherapy clinics operating 26 sites in eastern Sweden.",
+      "founded_year": 2010,
+      "employees": 430,
+      "revenue_eur_m": 74.0,
+      "ebitda_eur_m": 17.2,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder owned, no external capital.",
+        "holders": [
+          {"name": "Almqvist family", "holder_type": "founder", "stake_pct": 100.0, "since_year": 2010}
+        ]
+      },
+      "executives": [
+        {"name": "Henrik Almqvist", "title": "Founder and Chief Executive Officer", "age": 52, "in_role_since": 2010, "is_founder": true, "background": ["Physiotherapist and clinic owner (2000-2010)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-018",
+      "name": "Lindqvist Vardcentraler AB",
+      "country": "SE",
+      "city": "Stockholm",
+      "subsector": "Primary care centres",
+      "description": "Operator of 31 primary care centres in the Stockholm region under public care contracts.",
+      "founded_year": 1994,
+      "employees": 1180,
+      "revenue_eur_m": 172.0,
+      "ebitda_eur_m": 29.6,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "founder_and_family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder and two children hold the entire share capital.",
+        "holders": [
+          {"name": "Lindqvist family", "holder_type": "founder", "stake_pct": 100.0, "since_year": 1994}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Margareta Lindqvist", "title": "Founder and Chair", "age": 70, "in_role_since": 1994, "is_founder": true, "is_family_member": true, "background": ["General practitioner and practice owner (1982-1994)", "Founded the group in 1994"]},
+        {"name": "Erik Lindqvist", "title": "Chief Executive Officer", "age": 44, "in_role_since": 2018, "is_family_member": true, "background": ["Regional Director, Lindqvist Vardcentraler (2013-2018)", "Healthcare policy adviser (2008-2013)"]},
+        {"name": "Hanna Ek", "title": "Chief Financial Officer", "age": 39, "in_role_since": 2021, "background": ["Group Controller, listed care provider (2016-2021)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-019",
+      "name": "Helsinki Kuvantaminen Oy",
+      "country": "FI",
+      "city": "Helsinki",
+      "subsector": "Diagnostic imaging",
+      "description": "Diagnostic imaging centres providing magnetic resonance and computed tomography capacity to hospitals and insurers.",
+      "founded_year": 2003,
+      "employees": 560,
+      "revenue_eur_m": 98.0,
+      "ebitda_eur_m": 22.8,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned_with_pe_minority",
+        "family_founder_stake_pct": 60.0,
+        "pe_stake_pct": 40.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family holds a clear majority. Minority investor entered in 2024 to fund equipment renewal; reported to hold a put option exercisable from 2028.",
+        "holders": [
+          {"name": "Virtanen family", "holder_type": "family", "stake_pct": 60.0, "since_year": 2003},
+          {"name": "Baltic Health Capital", "holder_type": "pe_fund", "stake_pct": 40.0, "since_year": 2024}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Timo Virtanen", "title": "Founder and Chairman", "age": 65, "in_role_since": 2003, "is_founder": true, "is_family_member": true, "background": ["Consultant radiologist, university hospital (1990-2003)", "Founded the company in 2003"]},
+        {"name": "Laura Virtanen", "title": "Chief Executive Officer", "age": 38, "in_role_since": 2022, "is_family_member": true, "background": ["Head of Commercial, Helsinki Kuvantaminen (2018-2022)", "Medical device sales management (2012-2018)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-020",
+      "name": "Trondheim Medisinsk Utstyr AS",
+      "country": "NO",
+      "city": "Trondheim",
+      "subsector": "Medical devices",
+      "description": "Developer and manufacturer of patient monitoring accessories, supplying Nordic hospital procurement frameworks.",
+      "founded_year": 1991,
+      "employees": 480,
+      "revenue_eur_m": 84.0,
+      "ebitda_eur_m": 20.5,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "founder_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder owned, no external capital.",
+        "holders": [
+          {"name": "Bjorn Aasen (founder)", "holder_type": "founder", "stake_pct": 100.0, "since_year": 1991}
+        ]
+      },
+      "executives": [
+        {"name": "Bjorn Aasen", "title": "Founder and Chief Executive Officer", "age": 62, "in_role_since": 1991, "is_founder": true, "background": ["Biomedical engineer, hospital technical services (1985-1991)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-021",
+      "name": "Thameside Care Group Ltd",
+      "country": "GB",
+      "city": "Reading",
+      "subsector": "Elderly and residential care",
+      "description": "Operator of 41 residential and nursing homes across southern England.",
+      "founded_year": 1989,
+      "employees": 2600,
+      "revenue_eur_m": 224.0,
+      "ebitda_eur_m": 31.4,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Second-generation family ownership. Two family members on a five-person board.",
+        "holders": [
+          {"name": "Thorne family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1989}
+        ]
+      },
+      "executives": [
+        {"name": "Margaret Thorne", "title": "Chair", "age": 68, "in_role_since": 1989, "is_founder": true, "is_family_member": true, "background": ["Registered nurse and home manager (1978-1989)", "Founded the group in 1989 with a single home"]},
+        {"name": "David Thorne", "title": "Chief Executive Officer", "age": 45, "in_role_since": 2015, "is_family_member": true, "background": ["Operations Director, Thameside Care Group (2009-2015)", "Corporate finance, mid-market bank (2003-2009)"]},
+        {"name": "Priya Raman", "title": "Chief Financial Officer", "age": 41, "in_role_since": 2026, "background": ["Finance Director, listed care home operator (2019-2026)", "Audit and advisory (2007-2019)"], "notes": "Appointed July 2026."}
+      ]
+    },
+    {
+      "company_id": "MOCK-022",
+      "name": "Van Doorn Zorggroep BV",
+      "country": "NL",
+      "city": "Utrecht",
+      "subsector": "Outpatient care clinics",
+      "description": "Network of outpatient care and day treatment clinics in the central Netherlands.",
+      "founded_year": 1997,
+      "employees": 1420,
+      "revenue_eur_m": 178.0,
+      "ebitda_eur_m": 25.9,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder and family hold the entire share capital.",
+        "holders": [
+          {"name": "Van Doorn family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1997}
+        ]
+      },
+      "executives": [
+        {"name": "Willem van Doorn", "title": "Founder and Chief Executive Officer", "age": 66, "in_role_since": 1997, "is_founder": true, "is_family_member": true, "background": ["Hospital administrator, regional hospital (1988-1997)", "Founded the group in 1997"]},
+        {"name": "Sanne van Doorn", "title": "Director of Clinics", "age": 37, "in_role_since": 2020, "is_family_member": true, "background": ["Clinic manager, Van Doorn Zorggroep (2016-2020)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-023",
+      "name": "Brabant Medical Supplies BV",
+      "country": "NL",
+      "city": "Eindhoven",
+      "subsector": "Medical supplies distribution",
+      "description": "Distributor of consumables and single-use products to hospitals and care homes in the Benelux.",
+      "founded_year": 1984,
+      "employees": 690,
+      "revenue_eur_m": 210.0,
+      "ebitda_eur_m": 21.8,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "pe_majority",
+        "family_founder_stake_pct": 35.0,
+        "pe_stake_pct": 65.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Private equity majority since 2022; family retained a significant minority.",
+        "holders": [
+          {"name": "Meuse Capital Partners", "holder_type": "pe_fund", "stake_pct": 65.0, "since_year": 2022},
+          {"name": "Vermeulen family", "holder_type": "family", "stake_pct": 35.0, "since_year": 1984}
+        ]
+      },
+      "executives": [
+        {"name": "Joost Vermeulen", "title": "Chief Executive Officer", "age": 53, "in_role_since": 2010, "is_family_member": true, "background": ["Commercial Director, Brabant Medical Supplies (2004-2010)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-024",
+      "name": "Ardwick Diagnostics plc",
+      "country": "GB",
+      "city": "Manchester",
+      "subsector": "Diagnostics services",
+      "description": "Provider of pathology and diagnostics services to public and private healthcare purchasers, listed since 2010.",
+      "founded_year": 1996,
+      "employees": 2100,
+      "revenue_eur_m": 305.0,
+      "ebitda_eur_m": 44.0,
+      "listing_status": "listed_main_market",
+      "ticker": "MOCK:ARDW",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "listed",
+        "family_founder_stake_pct": 12.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 88.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Widely held since the 2010 listing; founder retains a 12 percent stake.",
+        "holders": [
+          {"name": "Dr. Alan Ardwick (founder)", "holder_type": "founder", "stake_pct": 12.0, "since_year": 1996},
+          {"name": "Free float", "holder_type": "free_float", "stake_pct": 88.0, "since_year": 2010}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Alan Ardwick", "title": "Founder and Non-Executive Director", "age": 71, "in_role_since": 1996, "is_founder": true, "background": ["Consultant pathologist, teaching hospital (1985-1996)"]},
+        {"name": "Claire Denholm", "title": "Chief Executive Officer", "age": 49, "in_role_since": 2020, "background": ["Managing Director, diagnostics division of a listed group (2014-2020)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-025",
+      "name": "Liege Sante Group SA",
+      "country": "BE",
+      "city": "Liege",
+      "subsector": "Outpatient clinics",
+      "description": "Outpatient specialist clinics and day surgery in eastern Belgium.",
+      "founded_year": 1993,
+      "employees": 540,
+      "revenue_eur_m": 82.0,
+      "ebitda_eur_m": 18.9,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder owned with two family members in management.",
+        "holders": [
+          {"name": "Grandjean family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1993}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Philippe Grandjean", "title": "Founder and Chief Executive Officer", "age": 64, "in_role_since": 1993, "is_founder": true, "is_family_member": true, "background": ["Consultant surgeon, university hospital (1984-1993)", "Founded the group in 1993"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-026",
+      "name": "Westmoor Veterinary Group Ltd",
+      "country": "GB",
+      "city": "Exeter",
+      "subsector": "Veterinary clinics",
+      "description": "Veterinary practice group with 38 small animal clinics and two referral hospitals in south-west England.",
+      "founded_year": 2002,
+      "employees": 780,
+      "revenue_eur_m": 96.0,
+      "ebitda_eur_m": 22.4,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "ownership": {
+        "control_type": "founder_owned_with_pe_minority",
+        "family_founder_stake_pct": 65.0,
+        "pe_stake_pct": 35.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder holds a clear majority. Minority investor entered in 2023 to fund practice acquisitions.",
+        "holders": [
+          {"name": "Dr. Ian Westmoor (founder)", "holder_type": "founder", "stake_pct": 65.0, "since_year": 2002},
+          {"name": "Larkmoor Health Partners", "holder_type": "pe_fund", "stake_pct": 35.0, "since_year": 2023}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Ian Westmoor", "title": "Founder and Chief Executive Officer", "age": 57, "in_role_since": 2002, "is_founder": true, "background": ["Practising veterinary surgeon and practice owner (1993-2002)"]},
+        {"name": "Rachel Pike", "title": "Chief Operating Officer", "age": 43, "in_role_since": 2019, "background": ["Regional Operations Manager, veterinary group (2014-2019)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-027",
+      "name": "Piemonte Salute SpA",
+      "country": "IT",
+      "city": "Turin",
+      "subsector": "Outpatient clinics",
+      "description": "Outpatient diagnostics and specialist clinics in north-west Italy.",
+      "founded_year": 1988,
+      "employees": 1600,
+      "revenue_eur_m": 245.0,
+      "ebitda_eur_m": 38.0,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: strong structural fit but outside the target geographies.",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Family owned across two generations.",
+        "holders": [
+          {"name": "Ferrero family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1988}
+        ]
+      },
+      "executives": [
+        {"name": "Marco Ferrero", "title": "Chairman", "age": 63, "in_role_since": 1988, "is_founder": true, "is_family_member": true, "background": ["Hospital manager, regional health authority (1980-1988)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-028",
+      "name": "Clinicas Reunidas Ibericas SL",
+      "country": "ES",
+      "city": "Valencia",
+      "subsector": "Private hospitals",
+      "description": "Private hospital group operating five acute hospitals on the Spanish east coast.",
+      "founded_year": 1991,
+      "employees": 2400,
+      "revenue_eur_m": 310.0,
+      "ebitda_eur_m": 44.2,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: strong structural fit but outside the target geographies.",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder and family hold the entire share capital.",
+        "holders": [
+          {"name": "Ferran family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1991}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Alejandro Ferran", "title": "Founder and Chief Executive Officer", "age": 68, "in_role_since": 1991, "is_founder": true, "is_family_member": true, "background": ["Consultant physician and clinic owner (1980-1991)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-029",
+      "name": "Meridian Atlantic Health Inc",
+      "country": "US",
+      "city": "Boston",
+      "subsector": "Health services",
+      "description": "Physician practice management and outpatient services group in the north-eastern United States.",
+      "founded_year": 1999,
+      "employees": 3100,
+      "revenue_eur_m": 420.0,
+      "ebitda_eur_m": 52.0,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: outside the target geographies.",
+      "ownership": {
+        "control_type": "founder_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder controlled.",
+        "holders": [
+          {"name": "Farrow family", "holder_type": "founder", "stake_pct": 100.0, "since_year": 1999}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Susan Farrow", "title": "Founder and Chief Executive Officer", "age": 60, "in_role_since": 1999, "is_founder": true, "background": ["Physician executive, academic medical centre (1990-1999)"]}
+      ]
+    },
+    {
+      "company_id": "MOCK-030",
+      "name": "Krakow Medlab Sp. z o.o.",
+      "country": "PL",
+      "city": "Krakow",
+      "subsector": "Laboratory services",
+      "description": "Clinical laboratory network serving hospitals and outpatient clinics in southern Poland.",
+      "founded_year": 1995,
+      "employees": 900,
+      "revenue_eur_m": 112.0,
+      "ebitda_eur_m": 26.1,
+      "listing_status": "private",
+      "financials_as_of": "FY2025",
+      "notes": "Test case: outside the target geographies.",
+      "ownership": {
+        "control_type": "family_owned",
+        "family_founder_stake_pct": 100.0,
+        "pe_stake_pct": 0.0,
+        "free_float_pct": 0.0,
+        "ownership_as_of": "2026-06-30",
+        "governance_notes": "Founder and family hold the entire share capital.",
+        "holders": [
+          {"name": "Zielinski family", "holder_type": "family", "stake_pct": 100.0, "since_year": 1995}
+        ]
+      },
+      "executives": [
+        {"name": "Dr. Marta Zielinska", "title": "Founder and Chief Executive Officer", "age": 55, "in_role_since": 1995, "is_founder": true, "is_family_member": true, "background": ["Clinical laboratory director, regional hospital (1987-1995)"]}
+      ]
+    }
+  ],
+
+  "signals": [
+    {
+      "signal_id": "MOCK-SIG-001",
+      "company_id": "MOCK-001",
+      "category": "succession",
+      "headline": "Founder (71) confirms a structured succession review is under way",
+      "detail": "In a published regional business interview the founder said the family has started a structured process to decide between family succession and bringing in an external partner, with a decision targeted within twelve months. The second-generation managing director separately confirmed that an advisory mandate is being scoped.",
+      "observed_on": "2026-08-19",
+      "confidence": 0.86,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Regional business daily interview (mock)", "Chamber of commerce panel transcript (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-002",
+      "company_id": "MOCK-001",
+      "category": "c_suite_change",
+      "headline": "CFO mandate extended to cover corporate development",
+      "detail": "The chief financial officer's remit was formally widened to include corporate development and transaction preparation, a pattern often seen ahead of a process.",
+      "observed_on": "2026-06-30",
+      "confidence": 0.71,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company announcement (mock)", "Trade press note (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-003",
+      "company_id": "MOCK-002",
+      "category": "c_suite_change",
+      "headline": "New CFO hired from a private-equity backed dental platform",
+      "detail": "Nils Aebischer joined as chief financial officer from a private equity majority-owned dental platform. A capability hire consistent with institutional preparation, but no ownership change or process has been reported.",
+      "observed_on": "2026-08-28",
+      "confidence": 0.78,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company announcement (mock)", "Professional network profile change (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-004",
+      "company_id": "MOCK-010",
+      "category": "capital_event",
+      "headline": "Two outlets report an unsolicited approach for a minority stake",
+      "detail": "Reports of an unsolicited approach for a 25 to 30 percent minority stake. The family declined to comment and no adviser appointment has been confirmed.",
+      "observed_on": "2026-08-11",
+      "confidence": 0.74,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["M&A rumour feed (mock)", "Local business press (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-005",
+      "company_id": "MOCK-011",
+      "category": "succession",
+      "headline": "Founder stepped back to chair, daughter appointed chief executive",
+      "detail": "Completed generational transition announced in November 2025. This signal is retained for the record and is the trigger on which the company was promoted to the active pipeline at the time.",
+      "observed_on": "2025-11-04",
+      "confidence": 0.81,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company announcement (mock)", "Nordic trade press (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-006",
+      "company_id": "MOCK-013",
+      "category": "ownership_governance_change",
+      "headline": "Unverified report of a shareholder agreement revision",
+      "detail": "A single trade publication referred to a revised shareholder agreement among family members. The report is vague on substance and no filing has been observed.",
+      "observed_on": "2026-07-22",
+      "confidence": 0.62,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Trade publication (mock)", "Secondary aggregator repeating the same report (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-007",
+      "company_id": "MOCK-018",
+      "category": "capital_event",
+      "headline": "Single-source report that a sale process is being prepared",
+      "detail": "One outlet reported that advisers are being lined up for a sale process. No second source and no confirmation from the company or any adviser.",
+      "observed_on": "2026-08-02",
+      "confidence": 0.83,
+      "corroborated": false,
+      "source_type": "mock_feed",
+      "corroborating_sources": []
+    },
+    {
+      "signal_id": "MOCK-SIG-008",
+      "company_id": "MOCK-006",
+      "category": "succession",
+      "headline": "Founder chairman (68) to retire from the board at the next annual meeting",
+      "detail": "Confirmed board retirement of the founder chairman. Retained in the universe to demonstrate that a strong confirmed trigger on a structurally excluded company must not generate a promotion.",
+      "observed_on": "2026-08-15",
+      "confidence": 0.90,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company announcement (mock)", "Swiss trade press (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-009",
+      "company_id": "MOCK-021",
+      "category": "c_suite_change",
+      "headline": "New chief financial officer appointed from a listed care operator",
+      "detail": "Priya Raman joined as chief financial officer from a listed care home operator. A single professionalisation hire with no accompanying ownership or process signal.",
+      "observed_on": "2026-07-15",
+      "confidence": 0.76,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company announcement (mock)", "Sector newsletter (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-010",
+      "company_id": "MOCK-022",
+      "category": "ownership_governance_change",
+      "headline": "Advisory board expanded with two external members",
+      "detail": "Two independent members joined the advisory board. Weak evidence of institutionalisation; no change to the shareholder register.",
+      "observed_on": "2026-05-19",
+      "confidence": 0.55,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Company website update (mock)", "Local press (mock)"]
+    },
+    {
+      "signal_id": "MOCK-SIG-011",
+      "company_id": "MOCK-008",
+      "category": "ownership_governance_change",
+      "headline": "Family holding vehicle restructured ahead of a generational transfer",
+      "detail": "Confirmed restructuring of the family holding vehicle. Retained to demonstrate that a strong confirmed trigger on a listed company must not generate a promotion.",
+      "observed_on": "2026-08-05",
+      "confidence": 0.88,
+      "corroborated": true,
+      "source_type": "mock_feed",
+      "corroborating_sources": ["Regulatory filing (mock)", "Financial press (mock)"]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "config_name": "Sourcing engine guardrails",
+  "version": "0.1.0",
+  "comment": "These are enforced in code, not requested politely in a prompt. config.py refuses to start if any of the safety settings below are weakened.",
+
+  "read_only": true,
+  "web_access_enabled": false,
+
+  "allowlisted_tools": [
+    "search_companies",
+    "get_company",
+    "get_ownership",
+    "get_executives",
+    "get_signals"
+  ],
+
+  "human_in_the_loop": {
+    "agent_may_send_external_messages": false,
+    "agent_may_write_outside_output_dirs": false,
+    "promotions_require_human_approval": true,
+    "borderline_cases_require_human_review": true
+  },
+
+  "audit": {
+    "log_every_tool_call": true,
+    "log_path": "audit_log.jsonl",
+    "fields": ["timestamp_utc", "run_id", "sequence", "tool", "parameters", "data_source", "result_summary"]
+  },
+
+  "outputs": {
+    "comment": "The only two directories the engine is allowed to write to.",
+    "review_queue_dir": "review_queue",
+    "state_dir": "state"
+  },
+
+  "data_sources": {
+    "active": "mock",
+    "available": {
+      "mock": { "enabled": true, "label": "MOCK DATA", "credentials_required": false },
+      "gain": { "enabled": false, "label": "Gain.pro", "credentials_required": true },
+      "inven": { "enabled": false, "label": "Inven", "credentials_required": true },
+      "factset": { "enabled": false, "label": "FactSet", "credentials_required": true }
+    }
+  }
+}
