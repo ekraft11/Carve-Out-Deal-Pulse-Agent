@@ -396,3 +396,232 @@ def write_screening_markdown(
 
     path.write_text("\n".join(lines), encoding="utf-8")
     return path
+
+
+# ---------------------------------------------------------------------------
+# Monitoring sheets
+# ---------------------------------------------------------------------------
+
+TRIGGER_HEADERS = [
+    "Signal ID",
+    "Company ID",
+    "Company",
+    "Classification",
+    "Category",
+    "Weight",
+    "Headline",
+    "Observed on",
+    "Age (days)",
+    "Confidence",
+    "Corroborated",
+    "Sources",
+    "Confirmed trigger",
+    "Assessment",
+    "Consequence",
+    "Detail",
+]
+
+PROPOSAL_HEADERS = [
+    "Company ID",
+    "Company",
+    "Proposed on",
+    "Proposed by",
+    "Status",
+    "Trigger category",
+    "Trigger",
+    "Signals",
+    "Why proposed",
+    "Freigabe",
+    "Freigabe durch",
+    "Freigabe am",
+]
+
+PROFILE_HEADERS = [
+    "Company ID",
+    "Company",
+    "Profile",
+    "Executive bios",
+    "Outreach readiness",
+    "Trigger status",
+    "Promotion record",
+    "Markdown file",
+]
+
+
+def trigger_scan_sheet(statuses) -> SheetSpec:
+    """Every signal assessed, with why it did or did not count."""
+    rows = []
+    for status in statuses:
+        for assessment in status.assessments:
+            signal = assessment.signal
+            rows.append([
+                signal.signal_id,
+                status.company_id,
+                status.company_name,
+                status.classification,
+                signal.category,
+                assessment.weight,
+                signal.headline,
+                signal.observed_on.isoformat(),
+                assessment.age_days,
+                round(signal.confidence, 2),
+                YES_NO[signal.corroborated],
+                "; ".join(signal.corroborating_sources) or "none",
+                YES_NO[assessment.confirmed],
+                assessment.verdict_text,
+                status.outcome_detail,
+                signal.detail,
+            ])
+    rows.sort(key=lambda r: (r[1], r[7]), reverse=False)
+    return SheetSpec(
+        name="04_Trigger_Scan",
+        headers=TRIGGER_HEADERS,
+        rows=rows,
+        key_header="Signal ID",
+        tracked_headers=("Confirmed trigger",),
+        widths={
+            "Signal ID": 14, "Company ID": 11, "Company": 30, "Classification": 15,
+            "Category": 26, "Weight": 12, "Headline": 56, "Observed on": 12,
+            "Age (days)": 10, "Confidence": 11, "Corroborated": 12, "Sources": 44,
+            "Confirmed trigger": 12, "Assessment": 58, "Consequence": 62, "Detail": 76,
+        },
+        wrap_headers=("Headline", "Assessment", "Consequence", "Detail", "Sources"),
+    )
+
+
+#: state status -> the word shown in the reviewer's approval column
+STATUS_TO_WORD = {
+    "approved": "Freigegeben",
+    "declined": "Abgelehnt",
+    "pending_human_approval": "",
+}
+
+
+def promotion_proposals_sheet(state, approval_options) -> SheetSpec:
+    """Proposals and decided promotions. The engine proposes; you decide.
+
+    The `Freigabe` column is the one place a human instruction travels back
+    into the engine: type a decision there, re-run, and the engine records it.
+    The cell is then rewritten from the recorded state, so the sheet and the
+    state file cannot drift apart.
+    """
+    rows = []
+    for record in state.promotions:
+        rows.append([
+            record.company_id,
+            record.company_name,
+            record.proposed_on,
+            record.proposed_by,
+            record.status,
+            record.trigger_category,
+            record.trigger_headline,
+            ", ".join(record.trigger_signal_ids),
+            record.note,
+            STATUS_TO_WORD.get(record.status, ""),
+            record.decided_by,
+            record.decided_on,
+        ])
+    return SheetSpec(
+        name="05_Promotion_Proposals",
+        headers=PROPOSAL_HEADERS,
+        rows=rows,
+        key_header="Company ID",
+        tracked_headers=("Status",),
+        widths={
+            "Company ID": 11, "Company": 30, "Proposed on": 12, "Proposed by": 30,
+            "Status": 22, "Trigger category": 20, "Trigger": 56, "Signals": 26,
+            "Why proposed": 92, "Freigabe": 16, "Freigabe durch": 20, "Freigabe am": 13,
+        },
+        wrap_headers=("Trigger", "Why proposed"),
+        dropdowns={"Freigabe": approval_options},
+        status_header="Status",
+    )
+
+
+def profiles_sheet(packs) -> SheetSpec:
+    """One row per active company; the full text lives in the markdown files."""
+    rows = []
+    for pack in packs:
+        rows.append([
+            pack.company_id,
+            pack.company_name,
+            pack.profile_text,
+            pack.bios_text,
+            pack.outreach_text,
+            pack.trigger_summary,
+            pack.approval_note,
+            f"review_queue/profiles/{pack.markdown_path.name}" if pack.markdown_path else "",
+        ])
+    return SheetSpec(
+        name="06_Profiles",
+        headers=PROFILE_HEADERS,
+        rows=rows,
+        key_header="Company ID",
+        widths={
+            "Company ID": 11, "Company": 30, "Profile": 110, "Executive bios": 96,
+            "Outreach readiness": 60, "Trigger status": 50, "Promotion record": 60,
+            "Markdown file": 48,
+        },
+        wrap_headers=("Profile", "Executive bios", "Outreach readiness",
+                      "Trigger status", "Promotion record"),
+    )
+
+
+def write_monitoring_markdown(
+    result,
+    state: PipelineState,
+    guardrails: Guardrails,
+    source_label: str,
+) -> Path:
+    """The pending promotion proposals, as a readable review-queue note."""
+    path = guardrails.review_queue_dir / "promotion_proposals.md"
+    guardrails.assert_write_allowed(path)
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    pending = state.pending
+
+    lines = [
+        "# Promotion proposals awaiting your decision",
+        "",
+        "> **MOCK DATA** - every company, person and event below is fictional.",
+        "> Verify anything before relying on it or sharing it.",
+        "",
+        f"- Generated: {now}",
+        f"- Data source: {source_label}",
+        f"- Signals assessed: {result.assessed_count}",
+        f"- Confirmed triggers: {result.confirmed_count}",
+        f"- **Proposals awaiting approval: {len(pending)}**",
+        "",
+        "The engine has **not** promoted anything. Each proposal below needs a human",
+        "decision. Record it on the `05_Promotion_Proposals` sheet of",
+        "`pipeline.xlsx` in the `Freigabe` column.",
+        "",
+    ]
+    if not pending:
+        lines.extend(["_No proposals awaiting a decision._", ""])
+    for record in pending:
+        lines.extend([
+            f"## {record.company_name} ({record.company_id})",
+            "",
+            f"- **Proposed on:** {record.proposed_on} by {record.proposed_by}",
+            f"- **Trigger category:** {record.trigger_category}",
+            f"- **Trigger:** {record.trigger_headline}",
+            f"- **Supporting signals:** {', '.join(record.trigger_signal_ids)}",
+            "",
+            f"{record.note}",
+            "",
+            "**Decision required:** approve, decline, or defer. Until then the company",
+            "stays on the watchlist.",
+            "",
+        ])
+
+    lines.extend(["## Companies with signals but no proposal", ""])
+    for status in result.statuses:
+        if status.proposal is not None:
+            continue
+        lines.append(
+            f"- **{status.company_name}** ({status.company_id}, "
+            f"{status.classification}): {status.outcome_detail}"
+        )
+    lines.append("")
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path

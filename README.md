@@ -93,11 +93,47 @@ produce are carried over untouched, so `screening` never wipes what `monitoring`
 | `01_Screening` | `screening` - all companies, classification, written reason |
 | `02_Watchlist` | `screening` |
 | `03_Active_Pipeline` | `screening` - human-approved promotions only |
-| `04_Trigger_Scan` | `monitoring` |
-| `05_Promotion_Proposals` | `monitoring` |
-| `06_Profiles` | `monitoring` |
+| `04_Trigger_Scan` | `monitoring` - every signal, confirmed or not, with the reason |
+| `05_Promotion_Proposals` | `monitoring` - your `Freigabe` column decides |
+| `06_Profiles` | `monitoring` - profile, bios and outreach note per active company |
 | `07_Audit_Trail` | every run, appended |
 | `08_Changelog` | every run, appended |
+
+## Approving a promotion
+
+The engine proposes; you decide. The decision travels back through the workbook,
+which is the only path by which a human instruction enters the engine:
+
+1. `python run.py monitoring` writes a proposal to `05_Promotion_Proposals` with
+   status `pending_human_approval`.
+2. You type `Freigegeben`, `Abgelehnt` or `Zurueckgestellt` in the `Freigabe`
+   column (there is a dropdown) and optionally your name in `Freigabe durch`.
+3. The next `python run.py monitoring` reads that cell, records the decision in
+   `state/pipeline_state.json`, and only then does the company appear in
+   `03_Active_Pipeline` with a full profile pack.
+
+A blank approval cell means "not decided yet" and changes nothing. A word the
+engine cannot interpret is reported on the console and left alone rather than
+guessed at. A declined promotion is not re-proposed automatically.
+
+## Trigger weighting
+
+Not every confirmed trigger justifies a promotion, so
+`triggers.promotion_policy` in `criteria.json` weights the four categories:
+
+| Category | Weight |
+|---|---|
+| `succession` | standalone - one is enough |
+| `ownership_governance_change` | standalone - one is enough |
+| `c_suite_change` | supporting - two supporting signals required |
+| `capital_event` | supporting - two supporting signals required |
+
+A signal only counts as a *confirmed trigger* if it clears the confidence
+threshold, is corroborated, falls inside the age window, and belongs to a known
+category. Every rejected signal keeps its rejection reason on `04_Trigger_Scan`,
+so "why did we not act on that?" stays answerable. The engine refuses to start
+if a category has no weighting, so a confirmed trigger can never silently count
+for nothing.
 
 ## Swapping in a real data source
 
@@ -113,7 +149,7 @@ inherited, so a new connector cannot bypass the allowlist or the audit log. Poin
 | 1 | Skeleton, criteria config, audit logger | done |
 | 2 | Mock universe + swappable data-source interface | done |
 | 4 | Screening engine + maintained Excel workbook | done |
+| 5 | Monitoring engine, trigger weighting, promotion proposals | done |
+| 6 | Output packs: profile, bios, outreach note | done |
 | 3 | Read-only MCP server | to do |
-| 5 | Monitoring engine | to do |
-| 6 | Output pack generator | to do |
-| 7 | Demo wiring + audit view | to do |
+| 7 | `run.py audit` view + demo walkthrough | to do |

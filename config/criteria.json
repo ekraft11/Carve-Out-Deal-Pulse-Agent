@@ -78,6 +78,19 @@
     "min_confidence_to_confirm": 0.7,
     "max_signal_age_days": 180,
     "require_corroboration": true,
-    "promotion_requires_human_approval": true
+    "promotion_requires_human_approval": true,
+
+    "promotion_policy": {
+      "comment": "Not every confirmed trigger is worth a promotion. A founder opening a succession process is the moment of opportunity; a new CFO is interesting but common. Standalone categories justify a promotion proposal on their own. Supporting categories need to appear together, at least supporting_signals_required_for_promotion of them, before a proposal is raised.",
+      "standalone_categories": [
+        "succession",
+        "ownership_governance_change"
+      ],
+      "supporting_categories": [
+        "c_suite_change",
+        "capital_event"
+      ],
+      "supporting_signals_required_for_promotion": 2
+    }
   }
 }

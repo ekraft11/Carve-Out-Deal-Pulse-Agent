@@ -145,3 +145,87 @@ class PipelineState:
             json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
         return path
+
+
+#: What a reviewer may type in the workbook's approval column, and what it means.
+DECISION_WORDS = {
+    "freigegeben": STATUS_APPROVED,
+    "approved": STATUS_APPROVED,
+    "ja": STATUS_APPROVED,
+    "yes": STATUS_APPROVED,
+    "abgelehnt": STATUS_DECLINED,
+    "declined": STATUS_DECLINED,
+    "rejected": STATUS_DECLINED,
+    "nein": STATUS_DECLINED,
+    "no": STATUS_DECLINED,
+    "zurueckgestellt": STATUS_PENDING,
+    "zurückgestellt": STATUS_PENDING,
+    "deferred": STATUS_PENDING,
+}
+
+
+@dataclass
+class AppliedDecision:
+    """One decision a reviewer made in the workbook, now recorded in state."""
+
+    company_id: str
+    company_name: str
+    from_status: str
+    to_status: str
+    decided_by: str
+
+
+def apply_workbook_decisions(
+    state: "PipelineState",
+    rows: dict[str, dict[str, Any]],
+    approval_column: str = "Freigabe",
+    approver_column: str = "Freigabe durch",
+    today: date | None = None,
+) -> tuple[list[AppliedDecision], list[str]]:
+    """Read the reviewer's approval column and update the promotion records.
+
+    This is the one path by which a human instruction enters the engine. It
+    only ever acts on an explicit word a person typed; a blank cell means
+    "no decision yet" and leaves the proposal pending.
+
+    Returns the decisions applied and any values it could not interpret.
+    """
+    applied: list[AppliedDecision] = []
+    unrecognised: list[str] = []
+    stamp = (today or date.today()).isoformat()
+
+    for promotion in state.promotions:
+        row = rows.get(promotion.company_id)
+        if not row:
+            continue
+        raw = row.get(approval_column)
+        if raw in (None, ""):
+            continue
+        word = str(raw).strip().lower()
+        target = DECISION_WORDS.get(word)
+        if target is None:
+            unrecognised.append(
+                f"{promotion.company_id}: '{raw}' in column '{approval_column}'"
+            )
+            continue
+        if target == promotion.status:
+            continue
+        approver = row.get(approver_column) or "reviewer (via workbook)"
+        applied.append(
+            AppliedDecision(
+                company_id=promotion.company_id,
+                company_name=promotion.company_name,
+                from_status=promotion.status,
+                to_status=target,
+                decided_by=str(approver),
+            )
+        )
+        promotion.status = target
+        if target == STATUS_PENDING:
+            promotion.decided_on = ""
+            promotion.decided_by = ""
+            promotion.note = (promotion.note or "") + " Deferred by reviewer."
+        else:
+            promotion.decided_on = stamp
+            promotion.decided_by = str(approver)
+    return applied, unrecognised

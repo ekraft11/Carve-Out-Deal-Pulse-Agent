@@ -26,12 +26,18 @@ from sourcing_engine.config import (
 )
 from sourcing_engine.data_sources import REGISTRY, DataSourceError, open_data_source
 from sourcing_engine.models import SchemaError
+from sourcing_engine.monitoring import MonitoringResult, TriggerMonitor
+from sourcing_engine.profiles import build_packs, write_pack_markdown
 from sourcing_engine.reporting import (
     active_pipeline_sheet,
     audit_sheet,
+    profiles_sheet,
+    promotion_proposals_sheet,
     readme_lines,
     screening_sheet,
+    trigger_scan_sheet,
     watchlist_sheet,
+    write_monitoring_markdown,
     write_screening_markdown,
 )
 from sourcing_engine.screening import (
@@ -41,8 +47,8 @@ from sourcing_engine.screening import (
     Screener,
     ScreeningResult,
 )
-from sourcing_engine.state import PipelineState
-from sourcing_engine.workbook import PipelineWorkbook
+from sourcing_engine.state import PipelineState, apply_workbook_decisions
+from sourcing_engine.workbook import PipelineWorkbook, read_sheet_by_key
 
 BANNER = f"Private Company Sourcing Engine v{__version__}  [{DATA_LABEL}]"
 RULE = "=" * 78
@@ -310,6 +316,167 @@ def cmd_screening(_args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_monitoring(_args: argparse.Namespace) -> int:
+    """Scan for triggers, propose promotions, and build the active packs."""
+    settings = load_settings()
+    guardrails, criteria, output = settings.guardrails, settings.criteria, settings.output
+    settings.ensure_output_dirs()
+
+    logger = AuditLogger.for_run(guardrails, command="monitoring")
+    source = open_data_source(guardrails, logger)
+    state = PipelineState.load(guardrails)
+
+    print(RULE)
+    print(BANNER)
+    print(f"data source: {source.source_label}")
+    print(RULE)
+
+    # -- pick up decisions the reviewer typed into the workbook ------------
+    # This is the only path by which a human instruction enters the engine.
+    # A blank approval cell means "not decided yet" and changes nothing.
+    decisions, unrecognised = apply_workbook_decisions(
+        state,
+        read_sheet_by_key(settings.workbook_path, "05_Promotion_Proposals", "Company ID"),
+        today=date.today(),
+    )
+    if decisions or unrecognised:
+        print("\nYOUR DECISIONS, READ FROM THE WORKBOOK")
+        for decision in decisions:
+            print(f"  {decision.company_id}  {decision.company_name}")
+            print(f"      {decision.from_status} -> {decision.to_status} "
+                  f"(by {decision.decided_by})")
+        for problem in unrecognised:
+            print(f"  COULD NOT READ  {problem}")
+            print(f"      Use one of: "
+                  f"{', '.join(output.approval_options)}. Left as it was.")
+        logger.log_event(
+            "human_decisions_applied",
+            {"applied": len(decisions), "unrecognised": unrecognised},
+        )
+
+    # Monitoring re-screens first: it has to know who is on the watchlist
+    # before it can decide what a trigger means. Screening is deterministic,
+    # so this cannot disagree with the screening run.
+    as_of = getattr(source, "as_of", None) or date.today()
+    screener = Screener(criteria, source, as_of)
+    result = ScreeningResult(
+        verdicts=screener.screen_all(), as_of=as_of, run_id=logger.run_id
+    )
+    result.apply_approved_promotions(state.approved_ids)
+
+    monitor = TriggerMonitor(criteria, source, state, as_of)
+    monitoring = MonitoringResult(
+        statuses=monitor.scan(result.verdicts), as_of=as_of, run_id=logger.run_id
+    )
+
+    print(f"\nTRIGGER SCAN  (as of {as_of.isoformat()})")
+    print(f"  signals assessed                   {monitoring.assessed_count}")
+    print(f"  confirmed triggers                 {monitoring.confirmed_count}")
+    print(f"  standalone categories              "
+          f"{', '.join(criteria.standalone_trigger_categories)}")
+    print(f"  supporting categories              "
+          f"{', '.join(criteria.supporting_trigger_categories)} "
+          f"({criteria.supporting_signals_required} required)")
+
+    print("\nSIGNAL BY SIGNAL")
+    for status in monitoring.statuses:
+        print(f"  {status.company_id}  {status.company_name[:32]:<32} [{status.classification}]")
+        for assessment in status.assessments:
+            mark = "CONFIRMED    " if assessment.confirmed else "not confirmed"
+            print(f"      {mark} {assessment.signal.category:<28} "
+                  f"conf {assessment.signal.confidence:.2f}  "
+                  f"{assessment.age_days:>3}d  {assessment.signal.signal_id}")
+            if not assessment.confirmed:
+                for reason in assessment.rejection_reasons:
+                    print(f"                    -> {reason}")
+        print(f"      => {status.outcome_detail}")
+
+    # -- proposals: written, never executed --------------------------------
+    new_proposals = 0
+    for status in monitoring.statuses:
+        if status.proposal is not None and state.propose(status.proposal):
+            new_proposals += 1
+
+    print("\nPROMOTION PROPOSALS (proposed, NOT executed)")
+    if state.pending:
+        for record in state.pending:
+            print(f"  {record.company_id}  {record.company_name}")
+            print(f"      trigger  {record.trigger_category}: {record.trigger_headline}")
+            print(f"      status   {record.status} - awaiting your approval")
+    else:
+        print("  none awaiting a decision")
+
+    # -- output packs for active companies ---------------------------------
+    active = result.by_classification(CLASS_ACTIVE)
+    trigger_lookup = {s.company_id: s for s in monitoring.statuses}
+    state_lookup = {p.company_id: p for p in state.promotions}
+    packs = build_packs(active, source, criteria, trigger_lookup, state_lookup)
+    for pack in packs:
+        pack.markdown_path = write_pack_markdown(pack, guardrails)
+
+    print(f"\nOUTPUT PACKS ({len(packs)} active pipeline company/companies)")
+    for pack in packs:
+        print(f"  {pack.company_id}  {pack.company_name}")
+        print(f"      profile     {len(pack.profile_lines)} fields")
+        print(f"      bios        {len(pack.bios)} executives")
+        for bio in pack.bios:
+            print(f"                  {bio[:96]}")
+        print(f"      outreach    {len(pack.outreach_lines)} checks, all PLACEHOLDER "
+              f"(no CRM or live-process data in this prototype)")
+        print(f"      markdown    ./{pack.markdown_path.relative_to(REPO_ROOT)}")
+
+    # -- workbook ----------------------------------------------------------
+    logger.log_event(
+        "run_finished", {"command": "monitoring", **monitoring.to_dict()}
+    )
+    specs = [
+        screening_sheet(result, output.decision_options),
+        watchlist_sheet(result, output.decision_options,
+                        monitoring.trigger_status_by_company()),
+        active_pipeline_sheet(result, state, output.decision_options),
+        trigger_scan_sheet(monitoring.statuses),
+        promotion_proposals_sheet(state, output.approval_options),
+        profiles_sheet(packs),
+        audit_sheet(guardrails, logger.run_id),
+    ]
+    workbook = PipelineWorkbook(settings.workbook_path, output, guardrails)
+    report = workbook.write(
+        specs,
+        readme_lines(criteria, guardrails, result, state, source.source_label, "monitoring"),
+        run_id=logger.run_id,
+    )
+
+    state.last_monitoring_run = logger.run_id
+    state_path = state.save(guardrails)
+
+    markdown_path = None
+    if output.write_markdown_packs:
+        markdown_path = write_monitoring_markdown(
+            monitoring, state, guardrails, source.source_label
+        )
+
+    print("\nOUTPUT")
+    verb = "created" if report.created else "updated"
+    print(f"  workbook {verb}   ./{report.path.relative_to(REPO_ROOT)}")
+    print(f"    sheets written    {', '.join(report.sheets_written)}")
+    print(f"    your entries kept {report.human_values_preserved} "
+          f"(columns: {', '.join(output.human_owned_columns)})")
+    print(f"    changelog entries {len(report.changelog_entries)} added this run")
+    if markdown_path:
+        print(f"  proposals note    ./{markdown_path.relative_to(REPO_ROOT)}")
+    print(f"  state             ./{state_path.relative_to(REPO_ROOT)} "
+          f"({new_proposals} new proposal(s) recorded)")
+    print(f"  audit log         ./{guardrails.audit_log_path.relative_to(REPO_ROOT)} "
+          f"({logger.call_count} entries this run)")
+
+    print(f"\n{RULE}")
+    print("The engine proposed; it promoted nothing. Approvals are yours to make.")
+    print(f"All company data is FICTIONAL ({criteria.data_label}). "
+          f"Verify before relying on or sharing any of it.")
+    print(RULE)
+    return 0
+
+
 def cmd_not_built(step: int, name: str):
     def _handler(_args: argparse.Namespace) -> int:
         print(f"'{name}' is not built yet - it arrives in step {step} of the build.")
@@ -335,8 +502,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     screening.set_defaults(handler=cmd_screening)
 
-    monitoring = subparsers.add_parser("monitoring", help="scan for triggers (step 5)")
-    monitoring.set_defaults(handler=cmd_not_built(5, "monitoring"))
+    monitoring = subparsers.add_parser(
+        "monitoring", help="scan for triggers and build active-company packs"
+    )
+    monitoring.set_defaults(handler=cmd_monitoring)
 
     audit = subparsers.add_parser("audit", help="show recorded data access (step 7)")
     audit.set_defaults(handler=cmd_not_built(7, "audit"))

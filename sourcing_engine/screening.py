@@ -160,7 +160,7 @@ class Screener:
             if ownership.family_founder_stake_pct >= 25.0:
                 concentration = (
                     f" Family/founder concentration of "
-                    f"{ownership.family_founder_stake_pct:.0f}% does not change this"
+                    f"{ownership.family_founder_stake_pct:.0f}% does not change this."
                 )
             return Check(
                 "Private company",

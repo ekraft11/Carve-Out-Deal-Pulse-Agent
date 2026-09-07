@@ -627,3 +627,38 @@ def _display(value: Any) -> str:
         return ""
     text = str(value)
     return text if len(text) <= 200 else text[:197] + "..."
+
+
+def read_sheet_by_key(
+    path: Path, sheet_name: str, key_header: str
+) -> dict[str, dict[str, Any]]:
+    """Read one sheet of an existing workbook, indexed by its key column.
+
+    Used to pick up decisions a reviewer typed into the workbook, which is the
+    only way a human instruction travels back into the engine. Opened
+    read-only with data_only=True and never saved.
+    """
+    if not Path(path).exists():
+        return {}
+    workbook = load_workbook(path, data_only=True)
+    if sheet_name not in workbook.sheetnames:
+        workbook.close()
+        return {}
+    sheet = workbook[sheet_name]
+    rows = list(sheet.iter_rows(values_only=True))
+    workbook.close()
+    if not rows:
+        return {}
+    headers = [("" if h is None else str(h)) for h in rows[0]]
+    if key_header not in headers:
+        return {}
+    key_index = headers.index(key_header)
+    indexed: dict[str, dict[str, Any]] = {}
+    for row in rows[1:]:
+        if key_index >= len(row) or row[key_index] in (None, ""):
+            continue
+        indexed[str(row[key_index])] = {
+            header: (row[i] if i < len(row) else None)
+            for i, header in enumerate(headers)
+        }
+    return indexed

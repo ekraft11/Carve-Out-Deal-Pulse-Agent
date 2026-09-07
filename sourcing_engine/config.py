@@ -246,6 +246,32 @@ class Criteria:
     def min_trigger_confidence(self) -> float:
         return float(self.triggers["min_confidence_to_confirm"])
 
+    @property
+    def max_signal_age_days(self) -> int:
+        return int(self.triggers.get("max_signal_age_days", 180))
+
+    @property
+    def require_corroboration(self) -> bool:
+        return bool(self.triggers.get("require_corroboration", True))
+
+    @property
+    def promotion_policy(self) -> dict[str, Any]:
+        return self.triggers.get("promotion_policy", {})
+
+    @property
+    def standalone_trigger_categories(self) -> tuple[str, ...]:
+        return tuple(self.promotion_policy.get("standalone_categories", ()))
+
+    @property
+    def supporting_trigger_categories(self) -> tuple[str, ...]:
+        return tuple(self.promotion_policy.get("supporting_categories", ()))
+
+    @property
+    def supporting_signals_required(self) -> int:
+        return int(
+            self.promotion_policy.get("supporting_signals_required_for_promotion", 2)
+        )
+
 
 def load_criteria(path: Path = CRITERIA_PATH) -> Criteria:
     raw = _load_json(path)
@@ -294,6 +320,34 @@ def load_criteria(path: Path = CRITERIA_PATH) -> Criteria:
         raise ConfigError(
             "criteria.json must route structural fit without a trigger to "
             "'watchlist'."
+        )
+    if not criteria.triggers.get("promotion_requires_human_approval", False):
+        raise ConfigError(
+            "criteria.json sets triggers.promotion_requires_human_approval=false. "
+            "Promotions must be proposed for a human to approve, never executed."
+        )
+    # Every trigger category must be weighted exactly once, otherwise a
+    # confirmed trigger could silently count for nothing.
+    standalone = set(criteria.standalone_trigger_categories)
+    supporting = set(criteria.supporting_trigger_categories)
+    overlap = standalone & supporting
+    if overlap:
+        raise ConfigError(
+            f"These trigger categories are listed as both standalone and "
+            f"supporting in criteria.json: {', '.join(sorted(overlap))}."
+        )
+    unweighted = set(criteria.trigger_categories) - standalone - supporting
+    if unweighted:
+        raise ConfigError(
+            f"These trigger categories have no weighting in "
+            f"triggers.promotion_policy: {', '.join(sorted(unweighted))}. "
+            f"List each one as either standalone or supporting."
+        )
+    unknown = (standalone | supporting) - set(criteria.trigger_categories)
+    if unknown:
+        raise ConfigError(
+            f"triggers.promotion_policy weights categories that are not in "
+            f"triggers.categories: {', '.join(sorted(unknown))}."
         )
     return criteria
 
